@@ -47,10 +47,20 @@ public class FileInfoServiceImpl implements FileInfoService {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		
+		Query q = em.createQuery ("SELECT fileInfo FROM FileInfo fileInfo WHERE fileInfo.fileID = :fileID");
+		q.setParameter("fileID", fileInfo.getFileID());
+		
 		// löscht die verschlüsselte Datei aus der Datenbank
 		try {
-			em.remove(fileInfo);
-			return true;
+			FileInfo fi = (FileInfo) q.getSingleResult();
+			if(fi != null){
+				em.remove(fi);
+				em.getTransaction().commit();
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		// löschen aus der Datenbank fehlgeschlagen
 		catch (Exception e) {
@@ -59,7 +69,6 @@ public class FileInfoServiceImpl implements FileInfoService {
 			return false;
 		}
 		finally {
-			em.getTransaction().commit();
 			em.close();
 		}
 	}
@@ -133,14 +142,24 @@ public class FileInfoServiceImpl implements FileInfoService {
 			// verschlüsseltes Dokument wird an den Header gehängt
 			os = new FileOutputStream(encryptedSaveFile, true);
 			CipherOutputStream cos = new CipherOutputStream(os, cipher);
-			byte[] readedBytes = new byte[1024];
-			int readedByteCount = 0;
+			
+//			byte[] readBytes = new byte[1024];
+//			long readByteCount = 0;
+			byte[] decryptedFileBytes = new byte[(int)decryptedFile.length()];
 			// Dokument wird mit dem Dokumentenschlüssel verschlüsselt im Filesystem abgelegt
-			do {
-				readedByteCount = is.read(readedBytes);
-				cos.write(readedBytes);
-			}
-			while(readedByteCount != -1);
+//			while( readByteCount < decryptedFile.length() ) {
+//				
+//				long restByteCount = decryptedFile.length()-readByteCount;
+//				// es sind keine 1024 Bytes mehr in der Datei
+//				if ( restByteCount < 1024 ) {
+//					readBytes = new byte[(int)restByteCount];
+//				}
+//				
+//				readByteCount += is.read(readBytes);
+//				decryptedFileBytes = readBytes;
+//			}
+			is.read(decryptedFileBytes);
+			os.write(cipher.doFinal(decryptedFileBytes));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -170,10 +189,12 @@ public class FileInfoServiceImpl implements FileInfoService {
 	private File generateNonExistingFilename(File file) {
 		
 		Random rnd = new Random();
+		String filename = file.getAbsolutePath();
 		while ( file.exists() ) {
 			// hängt eine Zufallszahl zwischen 0 und 9 an den Dateinamen, falls die Datei
 			// bereits existiert
-			file.renameTo(new File(file.getAbsolutePath() + rnd.nextInt(10)));
+			filename += rnd.nextInt(10);
+			file = new File(filename);
 		}
 		return file;
 	}
@@ -198,7 +219,7 @@ public class FileInfoServiceImpl implements FileInfoService {
 		fi.setFileName(filename);
 		fi.setSaveName(savename);
 		fi.setMaster(true);
-		fi.setUserID(-1l);
+		fi.setUserID(userid);
 		fi.setEncryptedKeyCopy(new byte[0]);
 		
 		// speichert die Datei-Infos in der Datenbank
@@ -210,29 +231,10 @@ public class FileInfoServiceImpl implements FileInfoService {
 	}
 
 	@Override
-	public File getFile(AnyUser user, Long fileId, String pwPrivate) {
+	public File getFile(AnyUser user, FileInfo fileInfo, String pwPrivate) {
 		
 		if ( !validatePrivateKeyDecryptionPassword(user, pwPrivate) ) {
 			return null;
-		}
-
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		
-		Query q = em.createQuery ("SELECT fileInfo FROM FileInfo fileInfo WHERE fileInfo.fileID = :fileID");
-		q.setParameter("fileID", fileId);
-		
-		FileInfo fileInfo=null;
-		try {
-			// Datei-Infos werden geladen
-			fileInfo = (FileInfo) q.getSingleResult();
-			em.getTransaction().commit();
-		}
-		catch(NoResultException e){
-			return null;
-		}
-		finally{
-			em.close();
 		}
 		
 		/**
@@ -281,18 +283,30 @@ public class FileInfoServiceImpl implements FileInfoService {
 			// das File des entschlüsselten Dokuments
 			decryptedDocFile = generateNonExistingFilename(
 					new File(Util.DECRYPTED_FILES_SAVE_PATH + fileInfo.getSaveName()));
-			is = new FileInputStream(new File(Util.ENCRYPTED_FILES_SAVE_PATH + fileInfo.getSaveName()));
-			// verschlüsseltes Dokument wird an den Header gehängt
+			File encryptedFile = new File(Util.ENCRYPTED_FILES_SAVE_PATH + fileInfo.getSaveName());
+			is = new FileInputStream(encryptedFile);
 			os = new FileOutputStream(decryptedDocFile);
-			CipherOutputStream cos = new CipherOutputStream(os, cipher);
-			byte[] readBytes = new byte[1024];
-			int readByteCount = 0;
+//			CipherOutputStream cos = new CipherOutputStream(os, cipher);
+			// liest den Header der verschlüsselten Datei aus,
+			// da dieser ignoriert wird
+			is.read(new byte[288]);
+//			byte[] readBytes = new byte[1024];
+//			long readByteCount = 288;
 			// Dokument wird mit dem Dokumentenschlüssel entschlüsselt
-			do {
-				readByteCount = is.read(readBytes);
-				cos.write(readBytes);
-			}
-			while(readByteCount != -1);
+			byte[] encryptedFileBytes = new byte[(int)encryptedFile.length()-288];
+			is.read(encryptedFileBytes);
+			os.write(cipher.doFinal(encryptedFileBytes));
+//			while( readByteCount < encryptedFile.length() ) {
+//				
+//				// es sind keine 1024 Bytes mehr in der Datei
+//				long restByteCount = encryptedFile.length()-readByteCount;
+//				if ( restByteCount < 1024 ) {
+//					readBytes = new byte[(int)restByteCount];
+//				}
+//				
+//				readByteCount += is.read(readBytes);
+//				cos.write(readBytes);
+//			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -387,46 +401,52 @@ public class FileInfoServiceImpl implements FileInfoService {
 	public List<AnyUser> getUsersWithKeyCopy(FileInfo fileInfo) {
 
 		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		
-		// lädt alle Datei-Infos der Schlüsselkopienm !!! außer die des Besitzers der Datei !!!
-		Query q = em.createQuery ("SELECT fileInfo FROM FileInfo fileInfo WHERE fileInfo.saveName = :saveName AND" +
-				" fileInfo.master = false");
-		q.setParameter("saveName", fileInfo.getSaveName());
-		
-		List<FileInfo> keyCopyFileInfos=null;
 		try {
-			// Datei-Infos werden geladen
-			keyCopyFileInfos = q.getResultList();
+			em.getTransaction().begin();
+			
+			// lädt alle Benutzer mit einer Schlüsselkopie aus der Datenbank
+			Query q = em.createQuery ("SELECT anyUser FROM AnyUser anyUser, FileInfo fi WHERE" +
+					" fi.userID = anyUser.id AND fi.master=false" +
+					" AND fi.saveName = :saveName");
+			q.setParameter("saveName", fileInfo.getSaveName());
+			List<AnyUser> usersWithKeyCopy = q.getResultList();
+			
+			em.getTransaction().commit();
+			return usersWithKeyCopy;
 		}
-		catch(NoResultException e){
+		catch(Exception e) {
+			e.printStackTrace();
 			return null;
 		}
-		finally{
-			em.getTransaction().commit();
-			em.close();
+		finally {
+			em.close();	
 		}
-		
-		// lädt alle Benutzer mit einem Schlüsselkopie aus der Datenbank
-		List<AnyUser> usersWithKeyCopy = new LinkedList<AnyUser>();
-		q = em.createQuery ("SELECT anyUser FROM AnyUser anyUser WHERE anyUser.id = :userId");
-		for ( FileInfo fi : keyCopyFileInfos ) {
-			
-			q.setParameter("userId", fi.getUserID());
-			
-			try {
-				usersWithKeyCopy.add((AnyUser)q.getSingleResult());
-			}
-			catch(NoResultException e){
-				return null;
-			}
-			finally{
-				em.getTransaction().commit();
-				em.close();
-			}
-		}
-		
-		return usersWithKeyCopy;
 	}
 
+	@Override
+	public List<FileInfo> getAllFileInfosOfUser(AnyUser user) {
+		
+		EntityManager em = emf.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			
+			// lädt alle Benutzer mit einer Schlüsselkopie aus der Datenbank
+			Query q = em.createQuery ("SELECT fileInfo FROM FileInfo fileInfo WHERE" +
+					" fileInfo.userID = :userID");
+			q.setParameter("userID", user.getId());
+			
+			List<FileInfo> fileInfosOfUser = q.getResultList();
+
+			em.getTransaction().commit();
+			
+			return fileInfosOfUser;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		finally {
+			em.close();	
+		}
+	}
 }
