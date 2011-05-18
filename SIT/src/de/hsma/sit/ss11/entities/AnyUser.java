@@ -19,10 +19,16 @@ public class AnyUser implements Serializable {
 	private long id;
 	private String name;
 	private String pwhash;
-	private String publicKey;
+	private byte[] publicKey;
 	private String privateKeyHash;
+	private byte[] encryptedPrivateKey;
 	
-
+	@Override
+	public String toString() {
+		return "id: " + id + " name: " + name + " pwhash: " + pwhash +
+		" publicKey: "+ new String(publicKey) + " privateKeyHash: " + privateKeyHash +
+		" encrypted private key: " + new String(encryptedPrivateKey);
+	}
 	
 	public AnyUser() {
 		super();
@@ -49,11 +55,11 @@ public class AnyUser implements Serializable {
 	public void setPwhash(String pwhash) {
 		this.pwhash = pwhash;
 	}   
-	public String getPublicKey() {
+	public byte[] getPublicKey() {
 		return this.publicKey;
 	}
 
-	public void setPublicKey(String publicKey) {
+	public void setPublicKey(byte[] publicKey) {
 		this.publicKey = publicKey;
 	}   
 	public String getPrivateKeyHash() {
@@ -64,5 +70,11 @@ public class AnyUser implements Serializable {
 		this.privateKeyHash = privateKeyHash;
 	}
 
-   
+	public byte[] getEncryptedPrivateKey() {
+		return encryptedPrivateKey;
+	}
+
+	public void setEncryptedPrivateKey(byte[] encryptedPrivateKey) {
+		this.encryptedPrivateKey = encryptedPrivateKey;
+	}
 }

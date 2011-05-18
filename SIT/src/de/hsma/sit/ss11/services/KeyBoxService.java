@@ -5,7 +5,7 @@ import de.hsma.sit.ss11.entities.FileInfo;
 
 public interface KeyBoxService {
 
-	public void giveKeyCopyToAnyUser(AnyUser user, FileInfo fileInfo);
+	public boolean giveKeyCopyToAnyUser(AnyUser owner, AnyUser user, FileInfo fileInfo, String privatePWFromOwner);
 	
 	public boolean removeKeyCopyFromUser(AnyUser user, FileInfo fileInfo);
 	
