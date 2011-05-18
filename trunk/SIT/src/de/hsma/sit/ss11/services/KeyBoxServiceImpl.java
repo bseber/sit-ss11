@@ -1,7 +1,10 @@
 package de.hsma.sit.ss11.services;
 
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.spec.X509EncodedKeySpec;
+
 import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -22,7 +25,10 @@ public class KeyBoxServiceImpl implements KeyBoxService {
 		
 		try {
 			Cipher cipher = Cipher.getInstance("RSA");
-			cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(user.getPublicKey(), "RSA"));
+			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(user.getPublicKey());
+			// der öffentliche Schlüssel des Benutzers wird rekonstruiert
+			Key userPublicKey = KeyFactory.getInstance("RSA").generatePublic(publicKeySpec);
+			cipher.init(Cipher.ENCRYPT_MODE, userPublicKey);
 			
 			em.getTransaction().begin();
 			
@@ -52,26 +58,28 @@ public class KeyBoxServiceImpl implements KeyBoxService {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		
-		Query q = em.createQuery ("SELECT fileInfo FROM FileInfo fileInfo WHERE fileInfo.userID = :userID");
+		Query q = em.createQuery ("SELECT fileInfo FROM FileInfo fileInfo WHERE fileInfo.userID = :userID" +
+				" AND fileInfo.saveName = :saveName");
 		q.setParameter("userID", user.getId());
+		q.setParameter("saveName", fileInfo.getSaveName());
 		
 		try{
-			FileInfo file = (FileInfo) q.getSingleResult();
-			if(file != null){
-				em.remove(file);
+			FileInfo fi = (FileInfo) q.getSingleResult();
+			if(fi != null){
+				em.remove(fi);
+				em.getTransaction().commit();
 				return true;
-			}else{
+			}
+			else{
 				return false;
 			}
 		}
 		catch(NoResultException e){
 			return false;
 		}
-		finally{
-			em.getTransaction().commit();
+		finally {
 			em.close();
 		}
-		
 	}
 	
 	

@@ -16,12 +16,14 @@ public interface FileInfoService {
 	 * Gibt die verschlüsselte Datei entschlüsselt zurück.
 	 * 
 	 * @param user Benutzer, der die Datei öffnet
-	 * @param fileId file-id der verschlüsselten Datei
+	 * @param fileInfo der verschlüsselten Datei
 	 * @param pwPrivate Passwort mit dem der Private-Key des Benutzers verschlüsselt ist
 	 * 
 	 * @return entschlüsselte Datei
 	 */
-	public File getFile(AnyUser user, Long id, String pwPrivate);
+	public File getFile(AnyUser user, FileInfo fileInfo, String pwPrivate);
 	
 	public List<AnyUser> getUsersWithKeyCopy(FileInfo fileInfo);
+	
+	public List<FileInfo> getAllFileInfosOfUser(AnyUser user);
 }
