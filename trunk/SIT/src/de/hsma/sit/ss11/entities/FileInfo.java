@@ -19,11 +19,16 @@ public class FileInfo implements Serializable {
 	private long fileID;
 	private String fileName;
 	private String saveName;
-	private String encryptedKeyCopy;
+	private byte[] encryptedKeyCopy;
 	private boolean master;
 	private long userID;
 	
-	
+	@Override
+	public String toString() {
+		return "id: " + fileID + " fileName: " + fileName + " saveName: " + saveName +
+		" encryptedKeyCopy: "+ new String(encryptedKeyCopy) + " master: " + master +
+		" user-id: " + userID;
+	}
 
 	public FileInfo() {
 		super();
@@ -49,11 +54,11 @@ public class FileInfo implements Serializable {
 	public void setSaveName(String saveName) {
 		this.saveName = saveName;
 	}   
-	public String getEncryptedKeyCopy() {
+	public byte[] getEncryptedKeyCopy() {
 		return this.encryptedKeyCopy;
 	}
 
-	public void setEncryptedKeyCopy(String encryptedKeyCopy) {
+	public void setEncryptedKeyCopy(byte[] encryptedKeyCopy) {
 		this.encryptedKeyCopy = encryptedKeyCopy;
 	}   
 	public boolean getMaster() {

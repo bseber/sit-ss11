@@ -7,6 +7,7 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import de.hsma.sit.ss11.entities.AnyUser;
+import de.hsma.sit.ss11.helper.Util;
 
 public class SecurityServiceImpl implements SecurityService {
 
@@ -14,24 +15,28 @@ public class SecurityServiceImpl implements SecurityService {
 	
 	@Override
 	public AnyUser login(String username, String password) {
-		// TODO Auto-generated method stub
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		
-		Query q = em.createQuery ("SELECT anyUser FROM AnyUser anyUser WHERE anyUser.name = :username AND anyUser.pwhash = :password");
+		Query q = em.createQuery ("SELECT anyUser FROM AnyUser anyUser WHERE anyUser.name = :username AND anyUser.pwhash = :pwHash");
 		q.setParameter("username", username);
-		q.setParameter("password", password);
+		try {
+			q.setParameter("pwHash", Util.getMD5Checksum(password));
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return null;
+		}
 		
 		try{
 			AnyUser u = (AnyUser) q.getSingleResult();
-			System.out.println(u.getName());
+			em.getTransaction().commit();
 			return u;
 		}
 		catch(NoResultException e){
+			e.printStackTrace();
 			return null;
 		}
 		finally{
-			em.getTransaction().commit();
 			em.close();
 		}
 	}

@@ -10,6 +10,6 @@ public interface UserService {
 	
 	public List<AnyUser> getAllUser();
 	
-	public void registerUser(String name, String password, String privatekey);
+	public boolean registerUser(String name, String password, String privatekey);
 	
 }
