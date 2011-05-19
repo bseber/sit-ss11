@@ -9,8 +9,16 @@ public class Messages {
 	Messages() {
 	}
 	
+	public String assignedUsers() {
+		return "Zugewiesene Benutzer";
+	}
+	
 	public String cancel() {
 		return "Abbrechen";
+	}
+	
+	public String files() {
+		return "Dateien";
 	}
 	
 	public String login() {
@@ -30,7 +38,11 @@ public class Messages {
 	}
 	
 	public String tooltipAddFile() {
-		return "Neue Datei hinzufügen";
+		return "Neue Datei hinzufügen und verschlüsseln";
+	}
+	
+	public String tooltipDownloadFile() {
+		return "Datei entschlüsseln und speichern";
 	}
 	
 	public String tooltipRemoveFile() {
@@ -39,6 +51,10 @@ public class Messages {
 	
 	public String tooltipLogout() {
 		return "Ausloggen";
+	}
+	
+	public String user() {
+		return "Benutzer";
 	}
 	
 	public String username() {

@@ -9,6 +9,9 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import de.hsma.sit.ss11.frontend.Command;
+import de.hsma.sit.ss11.frontend.view.MainWindow;
+import de.hsma.sit.ss11.frontend.view.MainWindow.Delegate;
 import de.hsma.sit.ss11.frontend.view.resources.Resources;
 
 public class NavPanel extends JPanel {
@@ -17,9 +20,11 @@ public class NavPanel extends JPanel {
 	private static final Color SOUTH_COLOR = Color.lightGray;
 
 	private final Resources resources;
+	private final Delegate delegate;
 
-	public NavPanel(Resources resources) {
+	public NavPanel(Resources resources, MainWindow.Delegate delegate) {
 		this.resources = resources;
+		this.delegate = delegate;
 		init();
 	}
 
@@ -55,19 +60,43 @@ public class NavPanel extends JPanel {
 
 	private void addCenterButtons(JPanel container) {
 		// add file
-		container
-				.add(new NavButton(resources.images().addFile(), resources
-						.images().addFileGlow(), resources.messages()
-						.tooltipAddFile()));
+		container.add(new NavButton(resources.images().addFile(), resources
+				.images().addFileGlow(), resources.messages().tooltipAddFile(),
+				new Command() {
+					@Override
+					public void execute() {
+						delegate.addFile();
+					}
+				}));
+		// download file
+		container.add(new NavButton(resources.images().downloadFile(),
+				resources.images().downloadFileGlow(), resources.messages()
+						.tooltipDownloadFile(), new Command() {
+					@Override
+					public void execute() {
+						delegate.downloadFile();
+					}
+				}));
 		// remove file
 		container.add(new NavButton(resources.images().removeFile(), resources
 				.images().removeFileGlow(), resources.messages()
-				.tooltipRemoveFile()));
+				.tooltipRemoveFile(), new Command() {
+			@Override
+			public void execute() {
+				delegate.removeFile();
+			}
+		}));
 	}
 
 	private void addEastButtons(JPanel container) {
 		// logout
 		container.add(new NavButton(resources.images().logout(), resources
-				.images().logoutGlow(), resources.messages().tooltipLogout()));
+				.images().logoutGlow(), resources.messages().tooltipLogout(),
+				new Command() {
+					@Override
+					public void execute() {
+						delegate.logoutAndExit();
+					}
+				}));
 	}
 }

@@ -7,10 +7,14 @@ import javax.swing.ImageIcon;
 public class Images {
 	
 	private final String PATH;
+	private final String ARROW_FORWARD = "forward-icon.png";
+	private final String ARROW_BACK = "back-icon.png";
 	private final String FILE_ADD_ICN = "file-add-icon.png";
 	private final String FILE_ADD_ICN_GLOW = "file-add-icon-glow.png";
 	private final String FILE_REM_ICN = "file-remove-icon.png";
 	private final String FILE_REM_ICN_GLOW = "file-remove-icon-glow.png";
+	private final String FILE_DOWN_ICN = "file-down-icon.png";
+	private final String FILE_DOWN_ICN_GLOW = "file-down-icon-glow.png";
 	private final String LOGOUT_ICN = "logout-icon.png";
 	private final String LOGOUT_ICN_GLOW = "logout-icon-glow.png";
 	private final String SECURITY_ICN = "security_icn.png";
@@ -25,6 +29,14 @@ public class Images {
 		PATH = packageName + "/";
 	}
 	
+	public ImageIcon arrowForward() {
+		return new ImageIcon(getResource(ARROW_FORWARD));
+	}
+	
+	public ImageIcon arrowBack() {
+		return new ImageIcon(getResource(ARROW_BACK));
+	}
+	
 	public ImageIcon addFile() {
 		return new ImageIcon(getResource(FILE_ADD_ICN));
 	}
@@ -34,6 +46,17 @@ public class Images {
 	 */
 	public ImageIcon addFileGlow() {
 		return new ImageIcon(getResource(FILE_ADD_ICN_GLOW));
+	}
+	
+	public ImageIcon downloadFile() {
+		return new ImageIcon(getResource(FILE_DOWN_ICN));
+	}
+	
+	/**
+	 * @return mouse over icon to add a file
+	 */
+	public ImageIcon downloadFileGlow() {
+		return new ImageIcon(getResource(FILE_DOWN_ICN_GLOW));
 	}
 	
 	public ImageIcon removeFile() {
