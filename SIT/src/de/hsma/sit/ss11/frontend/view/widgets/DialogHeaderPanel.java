@@ -57,7 +57,7 @@ public class DialogHeaderPanel extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		// paint gradient backgroundcolor
+		// paint gradient background
 		int panelHeight = getHeight();
 		int panelWidth = getWidth();
 		GradientPaint gradientPaint = new GradientPaint(0, 0, westColor,

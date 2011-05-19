@@ -20,7 +20,7 @@ public class Application {
 	
 	public static void showMainWindow(boolean successfulLogin) {
 		dialog.dispose();
-		MainWindow window = new MainWindow(clientFactory.mainWindowDelegate(), successfulLogin);
+		MainWindow window = new MainWindow(clientFactory.resources(), clientFactory.mainWindowDelegate(), successfulLogin);
 		window.setVisible(true);
 	}
 
