@@ -29,6 +29,18 @@ public class Messages {
 		return "Passwort";
 	}
 	
+	public String tooltipAddFile() {
+		return "Neue Datei hinzufügen";
+	}
+	
+	public String tooltipRemoveFile() {
+		return "markierte Datei löschen";
+	}
+	
+	public String tooltipLogout() {
+		return "Ausloggen";
+	}
+	
 	public String username() {
 		return "Benutzername";
 	}
