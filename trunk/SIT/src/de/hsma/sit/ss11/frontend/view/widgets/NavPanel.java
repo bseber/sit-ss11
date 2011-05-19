@@ -21,9 +21,11 @@ public class NavPanel extends JPanel {
 
 	private final Resources resources;
 	private final Delegate delegate;
+	private final MainWindow mainWindow;
 
-	public NavPanel(Resources resources, MainWindow.Delegate delegate) {
+	public NavPanel(Resources resources, MainWindow mainWindow, MainWindow.Delegate delegate) {
 		this.resources = resources;
+		this.mainWindow = mainWindow;
 		this.delegate = delegate;
 		init();
 	}
@@ -65,7 +67,14 @@ public class NavPanel extends JPanel {
 				new Command() {
 					@Override
 					public void execute() {
-						delegate.addFile();
+						String info;
+						if (delegate.addNewFile()) {
+							info = "Datei erfolgreich hinzugefügt :-)";
+							// TODO update file table and assigned users
+						} else {
+							info = "Datei konnte nicht hinzugefügt werden :-(";
+						}
+						mainWindow.setInformationText(info, 5000);
 					}
 				}));
 		// download file
@@ -83,7 +92,14 @@ public class NavPanel extends JPanel {
 				.tooltipRemoveFile(), new Command() {
 			@Override
 			public void execute() {
-				delegate.removeFile();
+				String info;
+				if (delegate.removeFile()) {
+					info = "Datei wurde erfolgreich gelöscht";
+					// TODO update file table and assigned users
+				} else {
+					info = "Datei konnte nicht gelöscht werden :-(";
+				}
+				mainWindow.setInformationText(info, 5000);
 			}
 		}));
 	}

@@ -7,37 +7,52 @@ import de.hsma.sit.ss11.frontend.view.MainWindow;
 import de.hsma.sit.ss11.frontend.view.resources.Resources;
 
 public class ClientFactory {
-	
+
 	private static final ClientFactory INSTANCE = new ClientFactory();
-	
+
 	private Resources resources;
+
+	private MainWindow mainWindow;
+
 	private LoginDialog.Delegate loginDelegate;
 	private MainWindow.Delegate mainWindowDelegate;
 
 	/**
-	 * ClientFactory should only be accessed by {@link #getInstance()} 
+	 * ClientFactory should only be accessed by {@link #getInstance()}
 	 */
 	private ClientFactory() {
 	}
-	
+
 	public static ClientFactory getInstance() {
 		return INSTANCE;
 	}
-	
+
 	public Resources resources() {
 		if (resources == null) {
 			resources = new Resources();
 		}
 		return resources;
 	}
+
+	public MainWindow mainWindow() {
+		return mainWindow(true);
+	}
 	
+	public MainWindow mainWindow(boolean successfulLogin) {
+		if (mainWindow == null) {
+			mainWindow = new MainWindow(resources(), mainWindowDelegate(),
+					successfulLogin);
+		}
+		return mainWindow;
+	}
+
 	public LoginDialog.Delegate loginDelegate() {
 		if (loginDelegate == null) {
 			loginDelegate = new LoginController();
 		}
 		return loginDelegate;
 	}
-	
+
 	public MainWindow.Delegate mainWindowDelegate() {
 		if (mainWindowDelegate == null) {
 			mainWindowDelegate = new MainWindowController();

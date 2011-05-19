@@ -9,8 +9,12 @@ public class Messages {
 	Messages() {
 	}
 	
+	public String allUsers() {
+		return "Alle Benutzer";
+	}
+	
 	public String assignedUsers() {
-		return "Zugewiesene Benutzer";
+		return "Benutzer mit Leserechten";
 	}
 	
 	public String cancel() {
@@ -51,10 +55,6 @@ public class Messages {
 	
 	public String tooltipLogout() {
 		return "Ausloggen";
-	}
-	
-	public String user() {
-		return "Benutzer";
 	}
 	
 	public String username() {

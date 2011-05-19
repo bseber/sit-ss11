@@ -7,12 +7,13 @@ import de.hsma.sit.ss11.frontend.view.MainWindow;
 public class MainWindowController implements MainWindow.Delegate {
 
 	@Override
-	public void addFile() {
+	public boolean addNewFile() {
 		// TODO Auto-generated method stub
 		
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.showOpenDialog(null);
 		
+		return false;
 	}
 
 	@Override
@@ -22,9 +23,9 @@ public class MainWindowController implements MainWindow.Delegate {
 	}
 
 	@Override
-	public void removeFile() {
+	public boolean removeFile() {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 	@Override
