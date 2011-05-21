@@ -1,4 +1,4 @@
-package de.hsma.sit.ss11.frontend.view.resources;
+package de.hsma.sit.ss11.frontend.resources;
 
 public class Messages {
 	
@@ -9,12 +9,12 @@ public class Messages {
 	Messages() {
 	}
 	
-	public String allUsers() {
-		return "Alle Benutzer";
+	public String addUser() {
+		return "Neuen Benutzer hinzufügen";
 	}
 	
 	public String assignedUsers() {
-		return "Benutzer mit Leserechten";
+		return "Zugewiesene Benutzer";
 	}
 	
 	public String cancel() {
@@ -33,6 +33,10 @@ public class Messages {
 		return "Geben Sie Ihren Benutzernamen und das Passwort ein";
 	}
 	
+	public String loginError() {
+		return "Login nicht erfolgreich";
+	}
+	
 	public String ok() {
 		return "OK";
 	}
@@ -49,6 +53,10 @@ public class Messages {
 		return "Datei entschlüsseln und speichern";
 	}
 	
+	public String tooltipInformation() {
+		return "Informationen über das Programm";
+	}
+	
 	public String tooltipRemoveFile() {
 		return "markierte Datei löschen";
 	}
@@ -57,8 +65,16 @@ public class Messages {
 		return "Ausloggen";
 	}
 	
+	public String user() {
+		return "Benutzer";
+	}
+	
 	public String username() {
 		return "Benutzername";
+	}
+	
+	public String userNotFound() {
+		return "Benutzer konnte nicht gefunden werden";
 	}
 	
 }

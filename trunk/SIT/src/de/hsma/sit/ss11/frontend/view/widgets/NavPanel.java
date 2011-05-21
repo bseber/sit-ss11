@@ -7,12 +7,14 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.hsma.sit.ss11.frontend.Command;
+import de.hsma.sit.ss11.frontend.resources.Resources;
 import de.hsma.sit.ss11.frontend.view.MainWindow;
 import de.hsma.sit.ss11.frontend.view.MainWindow.Delegate;
-import de.hsma.sit.ss11.frontend.view.resources.Resources;
 
 public class NavPanel extends JPanel {
 
@@ -21,9 +23,10 @@ public class NavPanel extends JPanel {
 
 	private final Resources resources;
 	private final Delegate delegate;
-	private final MainWindow mainWindow;
+	private final JFrame mainWindow;
 
-	public NavPanel(Resources resources, MainWindow mainWindow, MainWindow.Delegate delegate) {
+	public NavPanel(Resources resources, JFrame mainWindow,
+			MainWindow.Delegate delegate) {
 		this.resources = resources;
 		this.mainWindow = mainWindow;
 		this.delegate = delegate;
@@ -67,14 +70,7 @@ public class NavPanel extends JPanel {
 				new Command() {
 					@Override
 					public void execute() {
-						String info;
-						if (delegate.addNewFile()) {
-							info = "Datei erfolgreich hinzugefügt :-)";
-							// TODO update file table and assigned users
-						} else {
-							info = "Datei konnte nicht hinzugefügt werden :-(";
-						}
-						mainWindow.setInformationText(info, 5000);
+						delegate.addNewFile();
 					}
 				}));
 		// download file
@@ -92,16 +88,21 @@ public class NavPanel extends JPanel {
 				.tooltipRemoveFile(), new Command() {
 			@Override
 			public void execute() {
-				String info;
-				if (delegate.removeFile()) {
-					info = "Datei wurde erfolgreich gelöscht";
-					// TODO update file table and assigned users
-				} else {
-					info = "Datei konnte nicht gelöscht werden :-(";
-				}
-				mainWindow.setInformationText(info, 5000);
+				delegate.removeFile();
 			}
 		}));
+		// TODO display following only if user is admin
+		// separator
+		container.add(new JLabel(resources.images().navSeparator()));
+		// add new user
+		container.add(new NavButton(resources.images().addUser(), resources
+				.images().addUserGlow(), resources.messages().addUser(),
+				new Command() {
+					@Override
+					public void execute() {
+						delegate.addUser(mainWindow);
+					}
+				}));
 	}
 
 	private void addEastButtons(JPanel container) {
@@ -112,6 +113,15 @@ public class NavPanel extends JPanel {
 					@Override
 					public void execute() {
 						delegate.logoutAndExit();
+					}
+				}));
+		// info
+		container.add(new NavButton(resources.images().info(), resources
+				.images().infoGlow(),
+				resources.messages().tooltipInformation(), new Command() {
+					@Override
+					public void execute() {
+						delegate.about(mainWindow);
 					}
 				}));
 	}

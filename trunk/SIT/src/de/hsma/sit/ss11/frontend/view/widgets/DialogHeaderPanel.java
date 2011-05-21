@@ -37,10 +37,12 @@ public class DialogHeaderPanel extends JPanel {
 		txtPanel.setLayout(new GridLayout(2, 1, 0, 0));
 		
 		JLabel headingLabel = new JLabel(heading);
+		headingLabel.setForeground(Color.WHITE);
 		txtPanel.add(headingLabel);
 		headingLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
 		
 		JLabel descriptionLabel = new JLabel(description);
+		descriptionLabel.setForeground(Color.WHITE);
 		descriptionLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txtPanel.add(descriptionLabel);
 		

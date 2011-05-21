@@ -4,42 +4,42 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 import java.util.concurrent.FutureTask;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
-import de.hsma.sit.ss11.frontend.view.resources.Resources;
+import de.hsma.sit.ss11.entities.AnyUser;
+import de.hsma.sit.ss11.entities.FileInfo;
+import de.hsma.sit.ss11.frontend.controller.MainWindowController;
+import de.hsma.sit.ss11.frontend.resources.Resources;
 import de.hsma.sit.ss11.frontend.view.widgets.NavPanel;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.UIManager;
+import javax.swing.border.MatteBorder;
 
-public class MainWindow {
+public class MainWindow implements MainWindowController.MainWindowView {
 
 	public interface Delegate {
+
+		void about(JFrame parent);
 
 		/**
 		 * @return <code>true</code> if a file was added successfully, otherwise
 		 *         <code>false</code>
 		 */
 		boolean addNewFile();
+
+		void addUser(JFrame parent);
+
+		void clickedOnFile(FileInfo file);
 
 		void downloadFile();
 
@@ -57,14 +57,13 @@ public class MainWindow {
 	private final Resources resources;
 
 	private JFrame frame;
-	private JTable fileTable;
 	private JLabel lblInformation;
+	private JTable fileTable;
 
 	/**
 	 * Create the application.
 	 */
-	public MainWindow(Resources resources, Delegate delegate,
-			boolean successfulLogin) {
+	public MainWindow(Resources resources, Delegate delegate) {
 		this.resources = resources;
 		this.delegate = delegate;
 		initialize();
@@ -114,64 +113,47 @@ public class MainWindow {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 
-		NavPanel navPanel = new NavPanel(resources, this, delegate);
+		NavPanel navPanel = new NavPanel(resources, frame, delegate);
 		frame.getContentPane().add(navPanel, BorderLayout.NORTH);
 
 		JPanel contentPanel = new JPanel();
 		contentPanel.setBackground(Color.LIGHT_GRAY);
 		frame.getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new MigLayout("", "[584px,grow]",
-				"[grow][120px]"));
+		contentPanel.setLayout(new BorderLayout(0, 0));
 
 		JPanel fileContainerPanel = new JPanel();
 		fileContainerPanel.setOpaque(false);
 		fileContainerPanel.setBorder(null);
-		contentPanel.add(fileContainerPanel, "cell 0 0,grow");
-		fileContainerPanel.setLayout(new MigLayout("", "[422px,grow]", "[][200px,grow]"));
+		contentPanel.add(fileContainerPanel, BorderLayout.CENTER);
+		fileContainerPanel.setLayout(new MigLayout("", "[584px,grow]", "[300px,grow]"));
 
-		JPanel fileTableFilterPanel = new JPanel();
-		fileTableFilterPanel.setOpaque(false);
-		fileContainerPanel.add(fileTableFilterPanel, "cell 0 0,grow");
-		fileTableFilterPanel.setLayout(new BorderLayout(5, 5));
-		
 		JPanel panel = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
 		panel.setOpaque(false);
-		fileTableFilterPanel.add(panel, BorderLayout.CENTER);
-		
-		JLabel lblFiles = new JLabel(resources.messages().files());
-		lblFiles.setForeground(Color.WHITE);
-		panel.add(lblFiles);
+		panel.setBorder(new TitledBorder(BorderFactory.createEmptyBorder(),
+				resources.messages().files(), TitledBorder.LEADING,
+				TitledBorder.TOP, null, Color.white));
+		fileContainerPanel.add(panel, "cell 0 0,grow");
+		panel.setLayout(new GridLayout(0, 1, 0, 0));
 
-		JComboBox fileTableFilterComboBox = new JComboBox();
-		fileTableFilterComboBox.setForeground(Color.WHITE);
-		fileTableFilterComboBox.setModel(new DefaultComboBoxModel(new String[] {
-				"Alle Dateien", "Eigene Dateien", "Nur lesbare Dateien" }));
-		fileTableFilterPanel.add(fileTableFilterComboBox, BorderLayout.EAST);
-		
-		JScrollPane fileScrollPane = new JScrollPane();
-		fileScrollPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		fileScrollPane
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		fileContainerPanel.add(fileScrollPane, "cell 0 1,grow");
+		JScrollPane fileTableScrollPane = new JScrollPane();
+		fileTableScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		fileTableScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		panel.add(fileTableScrollPane);
 
 		fileTable = new JTable();
-		fileTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "New column", "New column", "New column" }));
-		fileScrollPane.setViewportView(fileTable);
+		fileTableScrollPane.setViewportView(fileTable);
 
 		JPanel userContainerPanel = new JPanel();
 		userContainerPanel.setOpaque(false);
 		userContainerPanel.setBorder(null);
-		contentPanel.add(userContainerPanel, "cell 0 1,grow");
-		userContainerPanel.setLayout(new MigLayout("", "[144px,grow][center][144px,grow]", "[grow]"));
+
+		contentPanel.add(userContainerPanel, BorderLayout.SOUTH);
+		userContainerPanel.setLayout(new MigLayout("", "[144px,grow][center][144px,grow]", "[119px,grow][5px]"));
 
 		JPanel allUsersContainer = new JPanel();
 		allUsersContainer.setOpaque(false);
 		allUsersContainer.setBorder(new TitledBorder(BorderFactory
-				.createEmptyBorder(), resources.messages().allUsers(),
+				.createEmptyBorder(), resources.messages().user(),
 				TitledBorder.LEADING, TitledBorder.TOP, null, Color.white));
 		userContainerPanel.add(allUsersContainer, "cell 0 0,grow");
 		allUsersContainer.setLayout(new GridLayout(0, 1, 0, 0));
@@ -190,11 +172,13 @@ public class MainWindow {
 		buttonContainer.setLayout(new GridLayout(2, 1, 0, 10));
 
 		JLabel btnAddUserToFile = new JLabel(resources.images().arrowForward());
-		btnAddUserToFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnAddUserToFile.setCursor(Cursor
+				.getPredefinedCursor(Cursor.HAND_CURSOR));
 		buttonContainer.add(btnAddUserToFile);
 
 		JLabel btnRemUserFromFile = new JLabel(resources.images().arrowBack());
-		btnRemUserFromFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnRemUserFromFile.setCursor(Cursor
+				.getPredefinedCursor(Cursor.HAND_CURSOR));
 		buttonContainer.add(btnRemUserFromFile);
 
 		JPanel assignedUsersContainer = new JPanel();
@@ -213,14 +197,39 @@ public class MainWindow {
 		assignedUsersContainer.add(assignedUsersScrollPane);
 
 		JPanel footerPanel = new JPanel();
-		footerPanel.setForeground(Color.WHITE);
+		footerPanel.setBorder(new MatteBorder(1, 0, 0, 0, (Color) Color.WHITE));
+		footerPanel.setForeground(new Color(245, 245, 245));
 		footerPanel.setPreferredSize(new Dimension(10, 25));
-		footerPanel.setBackground(new Color(220, 220, 220));
+		footerPanel.setBackground(Color.GRAY);
 		frame.getContentPane().add(footerPanel, BorderLayout.SOUTH);
 		footerPanel.setLayout(new MigLayout("", "[grow]", "[]"));
 
 		lblInformation = new JLabel("");
+		lblInformation.setForeground(Color.WHITE);
 		footerPanel.add(lblInformation, "cell 0 0,alignx left,aligny top");
+	}
+
+	@Override
+	public void setFileList(List<FileInfo> fileList) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setFileAssignedUsers(FileInfo file, List<AnyUser> assignedUsers) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setInfoText(String text) {
+		lblInformation.setText(text);
+	}
+
+	@Override
+	public void setUserList(List<AnyUser> userList) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

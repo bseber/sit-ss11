@@ -1,26 +1,22 @@
 package de.hsma.sit.ss11.frontend;
 
-import de.hsma.sit.ss11.frontend.view.LoginDialog;
+import de.hsma.sit.ss11.frontend.controller.LoginController;
 import de.hsma.sit.ss11.frontend.view.MainWindow;
 
 public class Application {
 
 	private static ClientFactory clientFactory;
-	private static LoginDialog dialog;
+	private static LoginController loginController;
 	
 	public static void main(String[] args) {
 		clientFactory = ClientFactory.getInstance();
-		run();
+		loginController = new LoginController();
+		loginController.setDialogVisible(true);
 	}
 	
-	public static void run() {
-		dialog = new LoginDialog(clientFactory.resources(), clientFactory.loginDelegate());
-		dialog.setVisible(true);
-	}
-	
-	public static void showMainWindow(boolean successfulLogin) {
-		dialog.dispose();
-		MainWindow window = new MainWindow(clientFactory.resources(), clientFactory.mainWindowDelegate(), successfulLogin);
+	public static void showMainWindow() {
+		loginController.setDialogVisible(false);
+		MainWindow window = new MainWindow(clientFactory.resources(), clientFactory.mainWindowDelegate());
 		window.setVisible(true);
 	}
 

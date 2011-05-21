@@ -1,19 +1,27 @@
 package de.hsma.sit.ss11.frontend.controller;
 
-import de.hsma.sit.ss11.frontend.Application;
 import de.hsma.sit.ss11.frontend.view.LoginDialog;
 
-public class LoginController implements LoginDialog.Delegate {
+public class LoginController {
 
-	@Override
-	public void loginClicked(String username, char[] password) {
-		// TODO Auto-generated method stub
-		
+	public interface LoginView {
+		void setVisible(boolean b);
+
+		void dispose();
 	}
 
-	@Override
-	public void cancelClicked() {
-		Application.showMainWindow(false);
+	private LoginView view;
+
+	public LoginController() {
+		view = new LoginDialog(new LoginUIHandler());
+	}
+
+	public void setDialogVisible(boolean b) {
+		if (b) {
+			view.setVisible(b);
+		} else {
+			view.dispose();
+		}
 	}
 
 }
