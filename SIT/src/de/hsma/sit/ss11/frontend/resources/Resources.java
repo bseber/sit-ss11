@@ -1,4 +1,4 @@
-package de.hsma.sit.ss11.frontend.view.resources;
+package de.hsma.sit.ss11.frontend.resources;
 
 public class Resources {
 

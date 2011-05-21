@@ -15,29 +15,28 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
-import de.hsma.sit.ss11.frontend.view.resources.Resources;
+import de.hsma.sit.ss11.frontend.controller.LoginController;
+import de.hsma.sit.ss11.frontend.resources.Resources;
 import de.hsma.sit.ss11.frontend.view.widgets.DialogHeaderPanel;
 
-public class LoginDialog extends JDialog {
-	
+public class LoginDialog extends JDialog implements LoginController.LoginView {
+
 	public interface Delegate {
-		
-		void loginClicked(String username, char[] password);
+
+		void loginClicked(JDialog parent, String username, char[] password);
 
 		void cancelClicked();
 	}
 
 	private final JPanel contentPanel;
 	private final Delegate delegate;
-	private final Resources resources;
 
 	private JTextField usernameTextfield;
 	private JPasswordField passwordField;
 
-	public LoginDialog(Resources resources, Delegate delegate) {
+	public LoginDialog(Delegate delegate) {
 		this.contentPanel = new JPanel();
 		this.delegate = delegate;
-		this.resources = resources;
 		init();
 	}
 
@@ -51,9 +50,10 @@ public class LoginDialog extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 
+		Resources resources = Resources.getInstance();
 		initHeaderPanel(resources);
-		initFormPanel();
-		initButtonPane();
+		initFormPanel(resources);
+		initButtonPane(resources);
 	}
 
 	private void initHeaderPanel(Resources resources) {
@@ -65,7 +65,7 @@ public class LoginDialog extends JDialog {
 		contentPanel.add(dialogHeaderPanel, BorderLayout.NORTH);
 	}
 
-	private void initFormPanel() {
+	private void initFormPanel(Resources resources) {
 		JPanel formPanel = new JPanel();
 		contentPanel.add(formPanel, BorderLayout.CENTER);
 		formPanel.setLayout(new MigLayout("", "[15.00][][278.00,grow][15.00]",
@@ -89,7 +89,7 @@ public class LoginDialog extends JDialog {
 		formPanel.add(passwordField, "cell 2 2,grow");
 	}
 
-	private void initButtonPane() {
+	private void initButtonPane(Resources resources) {
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
@@ -98,7 +98,8 @@ public class LoginDialog extends JDialog {
 		loginBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				delegate.loginClicked(usernameTextfield.getText(), passwordField.getPassword());
+				delegate.loginClicked(LoginDialog.this, usernameTextfield.getText(),
+						passwordField.getPassword());
 			}
 		});
 		buttonPane.add(loginBtn);

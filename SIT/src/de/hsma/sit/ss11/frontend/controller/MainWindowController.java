@@ -1,37 +1,37 @@
 package de.hsma.sit.ss11.frontend.controller;
 
-import javax.swing.JFileChooser;
+import java.util.List;
 
-import de.hsma.sit.ss11.frontend.view.MainWindow;
+import de.hsma.sit.ss11.entities.AnyUser;
+import de.hsma.sit.ss11.entities.FileInfo;
 
-public class MainWindowController implements MainWindow.Delegate {
+public class MainWindowController {
 
-	@Override
-	public boolean addNewFile() {
-		// TODO Auto-generated method stub
+	public interface MainWindowView {
+		/**
+		 * @param fileList
+		 *            the files to be displayed in the view
+		 */
+		void setFileList(List<FileInfo> fileList);
+
+		/**
+		 * @param file
+		 * @param assignedUsers
+		 */
+		void setFileAssignedUsers(FileInfo file, List<AnyUser> assignedUsers);
 		
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.showOpenDialog(null);
-		
-		return false;
+		void setInfoText(String text);
+
+		/**
+		 * @param userList
+		 */
+		void setUserList(List<AnyUser> userList);
 	}
 
-	@Override
-	public void downloadFile() {
-		// TODO Auto-generated method stub
-		
-	}
+	private MainWindowView view;
 
-	@Override
-	public boolean removeFile() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void logoutAndExit() {
-		// TODO Auto-generated method stub
-		System.exit(0);
+	public MainWindowController(MainWindowView view) {
+		this.view = view;
 	}
 
 }
