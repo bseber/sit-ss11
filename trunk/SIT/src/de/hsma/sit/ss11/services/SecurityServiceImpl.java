@@ -11,14 +11,16 @@ import de.hsma.sit.ss11.helper.Util;
 
 public class SecurityServiceImpl implements SecurityService {
 
-	public EntityManagerFactory emf = Persistence.createEntityManagerFactory("SIT");
-	
+	public EntityManagerFactory emf = Persistence
+			.createEntityManagerFactory("SIT");
+
 	@Override
 	public AnyUser login(String username, String password) {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		
-		Query q = em.createQuery ("SELECT anyUser FROM AnyUser anyUser WHERE anyUser.name = :username AND anyUser.pwhash = :pwHash");
+
+		Query q = em
+				.createQuery("SELECT anyUser FROM AnyUser anyUser WHERE anyUser.name = :username AND anyUser.pwhash = :pwHash");
 		q.setParameter("username", username);
 		try {
 			q.setParameter("pwHash", Util.getMD5Checksum(password));
@@ -26,17 +28,15 @@ public class SecurityServiceImpl implements SecurityService {
 			e1.printStackTrace();
 			return null;
 		}
-		
-		try{
+
+		try {
 			AnyUser u = (AnyUser) q.getSingleResult();
 			em.getTransaction().commit();
 			return u;
-		}
-		catch(NoResultException e){
+		} catch (NoResultException e) {
 			e.printStackTrace();
 			return null;
-		}
-		finally{
+		} finally {
 			em.close();
 		}
 	}
