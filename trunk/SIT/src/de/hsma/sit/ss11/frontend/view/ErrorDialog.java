@@ -23,17 +23,17 @@ public class ErrorDialog extends JDialog {
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public ErrorDialog(JDialog parent, String title, String errorMsg, Resources resources) {
+	public ErrorDialog(JDialog parent, String title, String errorMsg) {
 		super(parent, title, true);
-		init(errorMsg, resources);
-	}
-	
-	public ErrorDialog(JFrame parent, String title, String errorMsg, Resources resources) {
-		super(parent, title, true);
-		init(errorMsg, resources);
+		init(errorMsg);
 	}
 
-	private void init(String errorMsg, Resources resources) {
+	public ErrorDialog(JFrame parent, String title, String errorMsg) {
+		super(parent, title, true);
+		init(errorMsg);
+	}
+
+	private void init(String errorMsg) {
 		setMinimumSize(new Dimension(300, 140));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
@@ -42,14 +42,17 @@ public class ErrorDialog extends JDialog {
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new MigLayout("", "[70px,center][grow]", "[grow,center]"));
+		contentPanel.setLayout(new MigLayout("", "[70px,center][grow]",
+				"[grow,center]"));
 		{
-			JLabel icon = new JLabel(resources.images().warning());
+			JLabel icon = new JLabel(Resources.getInstance().images().warning());
 			contentPanel.add(icon, "cell 0 0");
 		}
 		{
-			JLabel lblNewLabel_1 = new JLabel("<html><p>" + errorMsg + "</p></html>");
-			contentPanel.add(lblNewLabel_1, "cell 1 0,alignx center,aligny center");
+			JLabel lblNewLabel_1 = new JLabel("<html><p>" + errorMsg
+					+ "</p></html>");
+			contentPanel.add(lblNewLabel_1,
+					"cell 1 0,alignx center,aligny center");
 		}
 		{
 			JPanel buttonPane = new JPanel();

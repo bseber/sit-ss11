@@ -6,12 +6,13 @@ import de.hsma.sit.ss11.services.UserService;
 
 public class AddUserDialogUIHandler implements AddUserDialog.UIHandler {
 
-	UserService userService = Factory.getInstance().getUserService();
-	
+	private final UserService userService = Factory.getInstance()
+			.getUserService();
+
 	@Override
-	public void addUser(String username, String password) {
-		// TODO Auto-generated method stub
-		
+	public boolean addUser(String username, String password,
+			String privatePassword) {
+		return userService.registerUser(username, password, privatePassword);
 	}
 
 }

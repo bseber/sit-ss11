@@ -20,6 +20,7 @@ public class Images {
 	private final String INFO_ICN = "info-icon.png";
 	private final String INFO_ICN_BIG = "info-icon-48.png";
 	private final String INFO_ICN_GLOW = "info-icon-glow.png";
+	private final String INPUT_ERROR = "inputError-icon.png";
 	private final String LOGOUT_ICN = "logout-icon.png";
 	private final String LOGOUT_ICN_GLOW = "logout-icon-glow.png";
 	private final String NAV_SEPARATOR = "nav-separator.png";
@@ -97,6 +98,10 @@ public class Images {
 	 */
 	public ImageIcon infoGlow() {
 		return new ImageIcon(getResource(INFO_ICN_GLOW));
+	}
+	
+	public ImageIcon inputError() {
+		return new ImageIcon(getResource(INPUT_ERROR));
 	}
 	
 	/**
