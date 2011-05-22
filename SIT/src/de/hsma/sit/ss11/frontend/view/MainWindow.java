@@ -41,7 +41,7 @@ public class MainWindow implements MainWindowController.MainWindowView {
 		 */
 		boolean onAddFileClicked();
 
-		void onAddUserClicked(JFrame parent);
+		void onAddUserClicked(MainWindow mainWindow, JFrame parent);
 
 		void onDownloadFileClicked();
 
@@ -56,6 +56,8 @@ public class MainWindow implements MainWindowController.MainWindowView {
 		 *         otherwise <code>false</code>
 		 */
 		boolean onRemoveFileClicked();
+		
+		void refreshUserList();
 
 	}
 
@@ -78,6 +80,10 @@ public class MainWindow implements MainWindowController.MainWindowView {
 		lblInformation = new JLabel();
 		initialize();
 		frame.pack();
+	}
+	
+	public void refreshUserList() {
+		uiHandler.refreshUserList();
 	}
 
 	public void setInformationText(final String text) {
@@ -111,19 +117,7 @@ public class MainWindow implements MainWindowController.MainWindowView {
 
 	public void setVisible(boolean b) {
 		frame.setVisible(true);
-//		System.out.println("a) " + splitPane.getDividerLocation());
-//		new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-//				try {
-//					Thread.sleep(5);
-//					splitPane.setDividerLocation(1);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//
-//			}
-//		}).start();
+		splitPane.setDividerLocation(splitPane.getParent().getHeight());
 	}
 
 	@Override
@@ -193,7 +187,7 @@ public class MainWindow implements MainWindowController.MainWindowView {
 		return new Command() {
 			@Override
 			public void execute() {
-				uiHandler.onAddUserClicked(frame);
+				uiHandler.onAddUserClicked(MainWindow.this, frame);
 			}
 		};
 	}
@@ -283,6 +277,7 @@ public class MainWindow implements MainWindowController.MainWindowView {
 		splitPane.setBorder(null);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setOpaque(false);
+		splitPane.setDividerSize(10);
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 
 		initFilePanel(splitPane);

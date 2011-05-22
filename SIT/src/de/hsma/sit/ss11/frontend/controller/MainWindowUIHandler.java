@@ -20,26 +20,32 @@ public class MainWindowUIHandler implements MainWindow.UIHandler {
 	}
 
 	@Override
+	public void refreshUserList() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
 	public boolean onAddFileClicked() {
 		// TODO Auto-generated method stub
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.showOpenDialog(null);
 		return false;
 	}
-	
+
 	@Override
-	public void onAddUserClicked(JFrame parent) {
+	public void onAddUserClicked(MainWindow mainWindow, JFrame parent) {
 		if (addUserDialog == null) {
-			addUserDialog = new AddUserDialog(parent,
+			addUserDialog = new AddUserDialog(mainWindow, parent,
 					clientFactory.resources(), clientFactory.addUserUIHandler());
 		}
 		addUserDialog.setVisible(true);
 	}
-	
+
 	@Override
 	public void onDownloadFileClicked() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -47,7 +53,7 @@ public class MainWindowUIHandler implements MainWindow.UIHandler {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	@Override
 	public void onInfoClicked(JFrame parent) {
 		if (infoDialog == null) {
