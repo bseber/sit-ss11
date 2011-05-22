@@ -222,8 +222,8 @@ public class AddUserDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				boolean success = uiHandler.addUser(usernameTxtField.getText(),
-						loginPassField.getPassword().toString(),
-						privatePassField.getPassword().toString());
+						String.valueOf(loginPassField.getPassword()),
+						String.valueOf(privatePassField.getPassword()));
 				if (success) {
 					resetInputFields();
 					mainWindow.refreshUserList();
