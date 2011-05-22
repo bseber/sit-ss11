@@ -16,7 +16,7 @@ public class Application {
 	
 	public static void showMainWindow() {
 		loginController.setDialogVisible(false);
-		MainWindow window = new MainWindow(clientFactory.resources(), clientFactory.mainWindowDelegate());
+		MainWindow window = new MainWindow(clientFactory.resources(), clientFactory.mainWindowUIHandler());
 		window.setVisible(true);
 	}
 

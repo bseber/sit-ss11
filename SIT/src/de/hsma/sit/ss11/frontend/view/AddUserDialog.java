@@ -20,7 +20,7 @@ import javax.swing.JPasswordField;
 
 public class AddUserDialog extends JDialog {
 
-	public interface Delegate {
+	public interface UIHandler {
 		void addUser(String username, String password);
 	}
 
@@ -28,9 +28,9 @@ public class AddUserDialog extends JDialog {
 	private JTextField usernameTxtField;
 	private JPasswordField passwordField;
 	private JPasswordField passwordField2;
-	private final Delegate delegate;
+	private final UIHandler delegate;
 
-	public AddUserDialog(JFrame parent, Resources resources, Delegate delegate) {
+	public AddUserDialog(JFrame parent, Resources resources, UIHandler delegate) {
 		super(parent, "", true);
 		this.delegate = delegate;
 		init(parent, resources);

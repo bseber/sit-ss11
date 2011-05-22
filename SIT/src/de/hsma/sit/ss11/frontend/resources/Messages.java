@@ -13,6 +13,10 @@ public class Messages {
 		return "Neuen Benutzer hinzufügen";
 	}
 	
+	public String assignUsersToFile() {
+		return "Verschiedenen Benutzern Leserechte zuweisen";
+	}
+	
 	public String assignedUsers() {
 		return "Zugewiesene Benutzer";
 	}
@@ -23,6 +27,10 @@ public class Messages {
 	
 	public String files() {
 		return "Dateien";
+	}
+	
+	public String filesharing() {
+		return "Datei freigeben";
 	}
 	
 	public String login() {
@@ -45,8 +53,20 @@ public class Messages {
 		return "Passwort";
 	}
 	
+	public String readRight() {
+		return "Leserechte";
+	}
+	
 	public String tooltipAddFile() {
 		return "Neue Datei hinzufügen und verschlüsseln";
+	}
+	
+	public String tooltipAddUser() {
+		return "Neuen Benutzer erstellen";
+	}
+	
+	public String tooltipAssignUsersToFile() {
+		return "Datei für andere Benutzer freigeben";
 	}
 	
 	public String tooltipDownloadFile() {

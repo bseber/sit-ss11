@@ -9,63 +9,73 @@ import java.util.List;
 import java.util.concurrent.FutureTask;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 import de.hsma.sit.ss11.entities.AnyUser;
 import de.hsma.sit.ss11.entities.FileInfo;
+import de.hsma.sit.ss11.frontend.Command;
 import de.hsma.sit.ss11.frontend.controller.MainWindowController;
+import de.hsma.sit.ss11.frontend.resources.Images;
 import de.hsma.sit.ss11.frontend.resources.Resources;
+import de.hsma.sit.ss11.frontend.view.listener.NavBtnMouseListener;
+import de.hsma.sit.ss11.frontend.view.widgets.NavButton;
 import de.hsma.sit.ss11.frontend.view.widgets.NavPanel;
-import javax.swing.border.MatteBorder;
 
 public class MainWindow implements MainWindowController.MainWindowView {
 
-	public interface Delegate {
-
-		void about(JFrame parent);
+	public interface UIHandler {
 
 		/**
 		 * @return <code>true</code> if a file was added successfully, otherwise
 		 *         <code>false</code>
 		 */
-		boolean addNewFile();
+		boolean onAddFileClicked();
 
-		void addUser(JFrame parent);
+		void onAddUserClicked(JFrame parent);
 
-		void clickedOnFile(FileInfo file);
+		void onDownloadFileClicked();
 
-		void downloadFile();
+		void onFileSelected(FileInfo file);
 
-		void logoutAndExit();
+		void onInfoClicked(JFrame parent);
+
+		void onLogoutClicked();
 
 		/**
 		 * @return <code>true</code> if a file was removed successfully,
 		 *         otherwise <code>false</code>
 		 */
-		boolean removeFile();
+		boolean onRemoveFileClicked();
 
 	}
 
-	private final Delegate delegate;
+	private final MainWindow.UIHandler uiHandler;
 	private final Resources resources;
 
-	private JFrame frame;
-	private JLabel lblInformation;
+	private final JFrame frame;
+	private final JLabel lblInformation;
 	private JTable fileTable;
+	private JSplitPane splitPane;
 
 	/**
 	 * Create the application.
 	 */
-	public MainWindow(Resources resources, Delegate delegate) {
+	public MainWindow(Resources resources, MainWindow.UIHandler uiHandler) {
 		this.resources = resources;
-		this.delegate = delegate;
+		this.uiHandler = uiHandler;
+		frame = new JFrame();
+		frame.getContentPane().setBackground(Color.LIGHT_GRAY);
+		lblInformation = new JLabel();
 		initialize();
 		frame.pack();
 	}
@@ -101,112 +111,19 @@ public class MainWindow implements MainWindowController.MainWindowView {
 
 	public void setVisible(boolean b) {
 		frame.setVisible(true);
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.setMinimumSize(new Dimension(600, 500));
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new BorderLayout(0, 0));
-
-		NavPanel navPanel = new NavPanel(resources, frame, delegate);
-		frame.getContentPane().add(navPanel, BorderLayout.NORTH);
-
-		JPanel contentPanel = new JPanel();
-		contentPanel.setBackground(Color.LIGHT_GRAY);
-		frame.getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new BorderLayout(0, 0));
-
-		JPanel fileContainerPanel = new JPanel();
-		fileContainerPanel.setOpaque(false);
-		fileContainerPanel.setBorder(null);
-		contentPanel.add(fileContainerPanel, BorderLayout.CENTER);
-		fileContainerPanel.setLayout(new MigLayout("", "[584px,grow]", "[300px,grow]"));
-
-		JPanel panel = new JPanel();
-		panel.setOpaque(false);
-		panel.setBorder(new TitledBorder(BorderFactory.createEmptyBorder(),
-				resources.messages().files(), TitledBorder.LEADING,
-				TitledBorder.TOP, null, Color.white));
-		fileContainerPanel.add(panel, "cell 0 0,grow");
-		panel.setLayout(new GridLayout(0, 1, 0, 0));
-
-		JScrollPane fileTableScrollPane = new JScrollPane();
-		fileTableScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		fileTableScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		panel.add(fileTableScrollPane);
-
-		fileTable = new JTable();
-		fileTableScrollPane.setViewportView(fileTable);
-
-		JPanel userContainerPanel = new JPanel();
-		userContainerPanel.setOpaque(false);
-		userContainerPanel.setBorder(null);
-
-		contentPanel.add(userContainerPanel, BorderLayout.SOUTH);
-		userContainerPanel.setLayout(new MigLayout("", "[144px,grow][center][144px,grow]", "[119px,grow][5px]"));
-
-		JPanel allUsersContainer = new JPanel();
-		allUsersContainer.setOpaque(false);
-		allUsersContainer.setBorder(new TitledBorder(BorderFactory
-				.createEmptyBorder(), resources.messages().user(),
-				TitledBorder.LEADING, TitledBorder.TOP, null, Color.white));
-		userContainerPanel.add(allUsersContainer, "cell 0 0,grow");
-		allUsersContainer.setLayout(new GridLayout(0, 1, 0, 0));
-
-		JScrollPane allUsersScrollPane = new JScrollPane();
-		allUsersScrollPane
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		allUsersScrollPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		allUsersContainer.add(allUsersScrollPane);
-
-		JPanel buttonContainer = new JPanel();
-		buttonContainer.setOpaque(false);
-		userContainerPanel.add(buttonContainer,
-				"cell 1 0,alignx center,aligny center");
-		buttonContainer.setLayout(new GridLayout(2, 1, 0, 10));
-
-		JLabel btnAddUserToFile = new JLabel(resources.images().arrowForward());
-		btnAddUserToFile.setCursor(Cursor
-				.getPredefinedCursor(Cursor.HAND_CURSOR));
-		buttonContainer.add(btnAddUserToFile);
-
-		JLabel btnRemUserFromFile = new JLabel(resources.images().arrowBack());
-		btnRemUserFromFile.setCursor(Cursor
-				.getPredefinedCursor(Cursor.HAND_CURSOR));
-		buttonContainer.add(btnRemUserFromFile);
-
-		JPanel assignedUsersContainer = new JPanel();
-		assignedUsersContainer.setOpaque(false);
-		assignedUsersContainer.setBorder(new TitledBorder(BorderFactory
-				.createEmptyBorder(), resources.messages().assignedUsers(),
-				TitledBorder.LEADING, TitledBorder.TOP, null, Color.white));
-		userContainerPanel.add(assignedUsersContainer, "cell 2 0,grow");
-		assignedUsersContainer.setLayout(new GridLayout(0, 1, 0, 0));
-
-		JScrollPane assignedUsersScrollPane = new JScrollPane();
-		assignedUsersScrollPane
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		assignedUsersScrollPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		assignedUsersContainer.add(assignedUsersScrollPane);
-
-		JPanel footerPanel = new JPanel();
-		footerPanel.setBorder(new MatteBorder(1, 0, 0, 0, (Color) Color.WHITE));
-		footerPanel.setForeground(new Color(245, 245, 245));
-		footerPanel.setPreferredSize(new Dimension(10, 25));
-		footerPanel.setBackground(Color.GRAY);
-		frame.getContentPane().add(footerPanel, BorderLayout.SOUTH);
-		footerPanel.setLayout(new MigLayout("", "[grow]", "[]"));
-
-		lblInformation = new JLabel("");
-		lblInformation.setForeground(Color.WHITE);
-		footerPanel.add(lblInformation, "cell 0 0,alignx left,aligny top");
+//		System.out.println("a) " + splitPane.getDividerLocation());
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				try {
+//					Thread.sleep(5);
+//					splitPane.setDividerLocation(1);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//
+//			}
+//		}).start();
 	}
 
 	@Override
@@ -230,6 +147,255 @@ public class MainWindow implements MainWindowController.MainWindowView {
 	public void setUserList(List<AnyUser> userList) {
 		// TODO Auto-generated method stub
 
+	}
+
+	private void initialize() {
+		frame.setMinimumSize(new Dimension(600, 500));
+		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+
+		initNavigation();
+		initContent();
+		initFooter();
+	}
+
+	private void initNavigation() {
+		NavPanel navPanel = new NavPanel();
+		frame.getContentPane().add(navPanel, BorderLayout.NORTH);
+		initLeftNav(navPanel);
+		initRightNav(navPanel);
+	}
+
+	private void initLeftNav(NavPanel navPanel) {
+		// add file
+		navPanel.addLeft(createButton(resources.images().addFile(), resources
+				.images().addFileGlow(), resources.messages().tooltipAddFile(),
+				getAddFileCommand()));
+		// remove file
+		navPanel.addLeft(createButton(resources.images().removeFile(),
+				resources.images().removeFileGlow(), resources.messages()
+						.tooltipRemoveFile(), getRemoveFileCommand()));
+		// download file
+		navPanel.addLeft(createButton(resources.images().downloadFile(),
+				resources.images().downloadFileGlow(), resources.messages()
+						.tooltipDownloadFile(), getDownloadFileCommand()));
+		// TODO display following only if user is admin
+		// separator
+		navPanel.addLeft(new JLabel(resources.images().navSeparator()));
+		// add new user
+		navPanel.addLeft(createButton(resources.images().addUser(), resources
+				.images().addUserGlow(), resources.messages().tooltipAddUser(),
+				getAddUserCommand()));
+	}
+
+	private Command getAddUserCommand() {
+		return new Command() {
+			@Override
+			public void execute() {
+				uiHandler.onAddUserClicked(frame);
+			}
+		};
+	}
+
+	private Command getRemoveFileCommand() {
+		return new Command() {
+			@Override
+			public void execute() {
+				uiHandler.onRemoveFileClicked();
+			}
+		};
+	}
+
+	private Command getDownloadFileCommand() {
+		return new Command() {
+			@Override
+			public void execute() {
+				uiHandler.onDownloadFileClicked();
+			}
+		};
+	}
+
+	private Command getAddFileCommand() {
+		return new Command() {
+			@Override
+			public void execute() {
+				uiHandler.onAddFileClicked();
+			}
+		};
+	}
+
+	private void initRightNav(NavPanel navPanel) {
+		// info
+		navPanel.addRight(createButton(resources.images().info(), resources
+				.images().infoGlow(),
+				resources.messages().tooltipInformation(), getInfoCommand()));
+		// logout
+		navPanel.addRight(createButton(resources.images().logout(), resources
+				.images().logoutGlow(), resources.messages().tooltipLogout(),
+				getLogoutCommand()));
+	}
+
+	private Command getInfoCommand() {
+		return new Command() {
+			@Override
+			public void execute() {
+				uiHandler.onInfoClicked(frame);
+			}
+		};
+	}
+
+	private Command getLogoutCommand() {
+		return new Command() {
+			@Override
+			public void execute() {
+				uiHandler.onLogoutClicked();
+			}
+		};
+	}
+
+	/**
+	 * @param icn
+	 *            icon of the button
+	 * @param icnMouseOver
+	 *            mouseOver-icon of the button
+	 * @param tooltip
+	 *            tooltip of the button
+	 * @param clickCommand
+	 *            the {@link Command} which will be executed when the button is
+	 *            clicked
+	 * @return
+	 */
+	private NavButton createButton(Icon icn, Icon icnMouseOver, String tooltip,
+			Command clickCommand) {
+		NavButton btn = new NavButton(icn, tooltip);
+		NavBtnMouseListener mlAddFile = new NavBtnMouseListener(btn,
+				clickCommand, icn, icnMouseOver);
+		btn.addMouseListener(mlAddFile);
+		return btn;
+	}
+
+	private void initContent() {
+		splitPane = new JSplitPane();
+		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		splitPane.setResizeWeight(1.0);
+		splitPane.setContinuousLayout(true);
+		splitPane.setBorder(null);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setOpaque(false);
+		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
+
+		initFilePanel(splitPane);
+		initAssignUserPanel(splitPane);
+	}
+
+	private void initFilePanel(JSplitPane splitPane) {
+		// file overview
+		//
+		JPanel fileContainerPanel = new JPanel();
+		splitPane.setLeftComponent(fileContainerPanel);
+		fileContainerPanel.setOpaque(false);
+		fileContainerPanel.setBorder(null);
+		fileContainerPanel.setLayout(new MigLayout("", "[584px,grow]",
+				"[300px,grow]"));
+
+		JPanel panel = new JPanel();
+		panel.setOpaque(false);
+		panel.setBorder(new TitledBorder(BorderFactory.createEmptyBorder(),
+				resources.messages().files(), TitledBorder.LEADING,
+				TitledBorder.TOP, null, Color.white));
+		fileContainerPanel.add(panel, "cell 0 0,grow");
+		panel.setLayout(new GridLayout(0, 1, 0, 0));
+
+		JScrollPane fileTableScrollPane = new JScrollPane();
+		fileTableScrollPane
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		fileTableScrollPane
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		panel.add(fileTableScrollPane);
+
+		fileTable = new JTable();
+		fileTableScrollPane.setViewportView(fileTable);
+	}
+
+	private void initAssignUserPanel(JSplitPane splitPane) {
+		// user overview
+		//
+		JPanel userContainerPanel = new JPanel();
+		userContainerPanel.setMinimumSize(new Dimension(10, 180));
+		splitPane.setRightComponent(userContainerPanel);
+		userContainerPanel.setOpaque(false);
+		userContainerPanel.setBorder(null);
+		userContainerPanel.setLayout(new MigLayout("", "[grow][center][grow]",
+				"[119px,grow][5px]"));
+
+		JPanel allUsersContainer = new JPanel();
+		allUsersContainer.setOpaque(false);
+		allUsersContainer.setBorder(new TitledBorder(BorderFactory
+				.createEmptyBorder(), resources.messages().user(),
+				TitledBorder.LEADING, TitledBorder.TOP, null, Color.white));
+		userContainerPanel.add(allUsersContainer, "cell 0 0,grow");
+		allUsersContainer.setLayout(new GridLayout(0, 1, 0, 0));
+
+		JScrollPane allUsersScrollPane = new JScrollPane();
+		allUsersScrollPane
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		allUsersScrollPane
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		allUsersContainer.add(allUsersScrollPane);
+
+		// buttons to assign user
+		//
+		JPanel btnAssignPanel = new JPanel();
+		btnAssignPanel.setOpaque(false);
+		userContainerPanel.add(btnAssignPanel,
+				"flowx,cell 1 0,alignx center,aligny center");
+		btnAssignPanel.setLayout(new GridLayout(3, 0, 0, 10));
+
+		Images images = Resources.getInstance().images();
+		JLabel btnAssignUser = new JLabel(images.arrowForward());
+		btnAssignUser.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnAssignPanel.add(btnAssignUser);
+
+		JLabel btnRemoveUser = new JLabel(images.arrowBack());
+		btnRemoveUser.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnAssignPanel.add(btnRemoveUser);
+
+		// TODO display when user do changes
+		JLabel btnSaveChanges = new JLabel(images.save());
+		btnSaveChanges
+				.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnAssignPanel.add(btnSaveChanges);
+
+		// assigned users
+		//
+		JPanel assignedUsersContainer = new JPanel();
+		assignedUsersContainer.setOpaque(false);
+		assignedUsersContainer.setBorder(new TitledBorder(BorderFactory
+				.createEmptyBorder(), resources.messages().assignedUsers(),
+				TitledBorder.LEADING, TitledBorder.TOP, null, Color.white));
+		userContainerPanel.add(assignedUsersContainer, "cell 2 0,grow");
+		assignedUsersContainer.setLayout(new GridLayout(0, 1, 0, 0));
+
+		JScrollPane assignedUsersScrollPane = new JScrollPane();
+		assignedUsersScrollPane
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		assignedUsersScrollPane
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		assignedUsersContainer.add(assignedUsersScrollPane);
+	}
+
+	private void initFooter() {
+		JPanel footerPanel = new JPanel();
+		footerPanel.setBorder(new MatteBorder(1, 0, 0, 0, (Color) Color.WHITE));
+		footerPanel.setForeground(new Color(245, 245, 245));
+		footerPanel.setPreferredSize(new Dimension(10, 25));
+		footerPanel.setBackground(Color.GRAY);
+		frame.getContentPane().add(footerPanel, BorderLayout.SOUTH);
+		footerPanel.setLayout(new MigLayout("", "[grow]", "[]"));
+
+		lblInformation.setForeground(Color.WHITE);
+		footerPanel.add(lblInformation, "cell 0 0,alignx left,aligny top");
 	}
 
 }

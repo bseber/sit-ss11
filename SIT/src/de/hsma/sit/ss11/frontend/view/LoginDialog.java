@@ -21,20 +21,20 @@ import de.hsma.sit.ss11.frontend.view.widgets.DialogHeaderPanel;
 
 public class LoginDialog extends JDialog implements LoginController.LoginView {
 
-	public interface Delegate {
+	public interface UIHandler {
 
-		void loginClicked(JDialog parent, String username, char[] password);
+		void onLoginClicked(JDialog parent, String username, char[] password);
 
-		void cancelClicked();
+		void onCancelClicked();
 	}
 
 	private final JPanel contentPanel;
-	private final Delegate delegate;
+	private final UIHandler delegate;
 
 	private JTextField usernameTextfield;
 	private JPasswordField passwordField;
 
-	public LoginDialog(Delegate delegate) {
+	public LoginDialog(LoginDialog.UIHandler delegate) {
 		this.contentPanel = new JPanel();
 		this.delegate = delegate;
 		init();
@@ -98,7 +98,7 @@ public class LoginDialog extends JDialog implements LoginController.LoginView {
 		loginBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				delegate.loginClicked(LoginDialog.this, usernameTextfield.getText(),
+				delegate.onLoginClicked(LoginDialog.this, usernameTextfield.getText(),
 						passwordField.getPassword());
 			}
 		});
@@ -109,7 +109,7 @@ public class LoginDialog extends JDialog implements LoginController.LoginView {
 		cancelBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				delegate.cancelClicked();
+				delegate.onCancelClicked();
 			}
 		});
 		buttonPane.add(cancelBtn);
