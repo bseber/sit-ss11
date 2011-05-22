@@ -4,7 +4,7 @@ import de.hsma.sit.ss11.factories.Factory;
 import de.hsma.sit.ss11.frontend.view.AddUserDialog;
 import de.hsma.sit.ss11.services.UserService;
 
-public class AddUserDialogUIHandler implements AddUserDialog.Delegate {
+public class AddUserDialogUIHandler implements AddUserDialog.UIHandler {
 
 	UserService userService = Factory.getInstance().getUserService();
 	

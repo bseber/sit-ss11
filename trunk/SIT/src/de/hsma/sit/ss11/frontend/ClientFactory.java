@@ -13,11 +13,11 @@ public class ClientFactory {
 	private static final ClientFactory INSTANCE = new ClientFactory();
 
 	private Resources resources;
-	private AddUserDialog.Delegate addUserDelegate;
+	private AddUserDialog.UIHandler addUserUIHandler;
 	private MainWindow mainWindow;
 
-	private LoginDialog.Delegate loginDelegate;
-	private MainWindow.Delegate mainWindowDelegate;
+	private LoginDialog.UIHandler loginUIHandler;
+	private MainWindow.UIHandler mainWindowUIHandler;
 
 	/**
 	 * ClientFactory should only be accessed by {@link #getInstance()}
@@ -40,32 +40,32 @@ public class ClientFactory {
 		return mainWindow(true);
 	}
 
-	public AddUserDialog.Delegate addUserDelegate() {
-		if (addUserDelegate == null) {
-			addUserDelegate = new AddUserDialogUIHandler();
+	public AddUserDialog.UIHandler addUserUIHandler() {
+		if (addUserUIHandler == null) {
+			addUserUIHandler = new AddUserDialogUIHandler();
 		}
-		return addUserDelegate;
+		return addUserUIHandler;
 	}
 
 	public MainWindow mainWindow(boolean successfulLogin) {
 		if (mainWindow == null) {
-			mainWindow = new MainWindow(resources(), mainWindowDelegate());
+			mainWindow = new MainWindow(resources(), mainWindowUIHandler());
 		}
 		return mainWindow;
 	}
 
-	public LoginDialog.Delegate loginDelegate() {
-		if (loginDelegate == null) {
-			loginDelegate = new LoginUIHandler();
+	public LoginDialog.UIHandler loginUIHandler() {
+		if (loginUIHandler == null) {
+			loginUIHandler = new LoginUIHandler();
 		}
-		return loginDelegate;
+		return loginUIHandler;
 	}
 
-	public MainWindow.Delegate mainWindowDelegate() {
-		if (mainWindowDelegate == null) {
-			mainWindowDelegate = new MainWindowUIHandler(this);
+	public MainWindow.UIHandler mainWindowUIHandler() {
+		if (mainWindowUIHandler == null) {
+			mainWindowUIHandler = new MainWindowUIHandler(this);
 		}
-		return mainWindowDelegate;
+		return mainWindowUIHandler;
 	}
 
 }
