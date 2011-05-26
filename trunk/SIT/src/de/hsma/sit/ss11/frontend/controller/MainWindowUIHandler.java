@@ -4,19 +4,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 import de.hsma.sit.ss11.entities.FileInfo;
-import de.hsma.sit.ss11.frontend.ClientFactory;
-import de.hsma.sit.ss11.frontend.view.AddUserDialog;
 import de.hsma.sit.ss11.frontend.view.InfoDialog;
 import de.hsma.sit.ss11.frontend.view.MainWindow;
 
 public class MainWindowUIHandler implements MainWindow.UIHandler {
 
-	private final ClientFactory clientFactory;
-	private AddUserDialog addUserDialog;
 	private InfoDialog infoDialog;
 
-	public MainWindowUIHandler(ClientFactory clientFactory) {
-		this.clientFactory = clientFactory;
+	public MainWindowUIHandler() {
 	}
 
 	@Override
@@ -31,15 +26,6 @@ public class MainWindowUIHandler implements MainWindow.UIHandler {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.showOpenDialog(null);
 		return false;
-	}
-
-	@Override
-	public void onAddUserClicked(MainWindow mainWindow, JFrame parent) {
-		if (addUserDialog == null) {
-			addUserDialog = new AddUserDialog(mainWindow, parent,
-					clientFactory.resources(), clientFactory.addUserUIHandler());
-		}
-		addUserDialog.setVisible(true);
 	}
 
 	@Override

@@ -1,18 +1,23 @@
 package de.hsma.sit.ss11.frontend.view;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 import de.hsma.sit.ss11.frontend.controller.LoginController;
@@ -22,71 +27,95 @@ import de.hsma.sit.ss11.frontend.view.widgets.DialogHeaderPanel;
 public class LoginDialog extends JDialog implements LoginController.LoginView {
 
 	public interface UIHandler {
+		
+		void onCancelClicked();
 
 		void onLoginClicked(JDialog parent, String username, char[] password);
-
-		void onCancelClicked();
+		
+		void onRegisterClicked();
 	}
 
 	private final JPanel contentPanel;
-	private final UIHandler delegate;
-
+	private final UIHandler uiHandler;
 	private JTextField usernameTextfield;
 	private JPasswordField passwordField;
 
-	public LoginDialog(LoginDialog.UIHandler delegate) {
+	public LoginDialog(LoginDialog.UIHandler uiHandler) {
 		this.contentPanel = new JPanel();
-		this.delegate = delegate;
+		this.uiHandler = uiHandler;
 		init();
+		this.pack();
 	}
 
 	private void init() {
 		setResizable(false);
 		setModal(true);
 		setAlwaysOnTop(true);
-		setBounds(100, 100, 450, 210);
+		setLocationRelativeTo(null);
+		
 		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(null);
+		contentPanel.setBorder(new EmptyBorder(15, 15, 0, 15));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new BorderLayout(0, 0));
 
 		Resources resources = Resources.getInstance();
 		initHeaderPanel(resources);
-		initFormPanel(resources);
+		initContentPanel(resources);
 		initButtonPane(resources);
 	}
 
 	private void initHeaderPanel(Resources resources) {
-		String heading = resources.messages().login();
-		String description = resources.messages().loginDescription();
-		ImageIcon icon = resources.images().lock();
-		DialogHeaderPanel dialogHeaderPanel = new DialogHeaderPanel(icon,
-				heading, description, this.getWidth());
-		contentPanel.add(dialogHeaderPanel, BorderLayout.NORTH);
+		JPanel dialogHeaderPanel = new DialogHeaderPanel(resources
+				.images().lock(), resources.messages().login(), resources
+				.messages().loginDescription(), this.getWidth());
+		getContentPane().add(dialogHeaderPanel, BorderLayout.NORTH);
 	}
 
-	private void initFormPanel(Resources resources) {
-		JPanel formPanel = new JPanel();
-		contentPanel.add(formPanel, BorderLayout.CENTER);
-		formPanel.setLayout(new MigLayout("", "[15.00][][278.00,grow][15.00]",
-				"[01.00,grow][25.00][25.00][01.00,grow]"));
-
-		JLabel lblUsername = new JLabel(resources.messages().username() + ":");
-		lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		formPanel.add(lblUsername, "cell 1 1,alignx trailing");
-
+	private void initContentPanel(Resources resources) {
+		contentPanel.setLayout(new MigLayout("", "[][grow]", "[][][][]"));
+		
+		final JLabel lblRegisterNewAccount = new JLabel("Registrieren");
+		lblRegisterNewAccount.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				uiHandler.onRegisterClicked();
+			}
+		});
+		lblRegisterNewAccount.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblRegisterNewAccount.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPanel.add(lblRegisterNewAccount, "cell 1 0,alignx right");
+		
+		JLabel lblUsername = new JLabel("Benutzername:");
+		lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		contentPanel.add(lblUsername, "cell 0 1,alignx trailing");
+		
 		usernameTextfield = new JTextField();
-		usernameTextfield.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		formPanel.add(usernameTextfield, "cell 2 1,grow");
+		contentPanel.add(usernameTextfield, "cell 1 1,growx");
 		usernameTextfield.setColumns(10);
-
-		JLabel lblPassword = new JLabel(resources.messages().password() + ":");
-		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		formPanel.add(lblPassword, "cell 1 2,alignx trailing");
-
+		
+		JLabel lblPassword = new JLabel("Passwort:");
+		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		contentPanel.add(lblPassword, "cell 0 2,alignx trailing");
+		
 		passwordField = new JPasswordField();
-		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		formPanel.add(passwordField, "cell 2 2,grow");
+		contentPanel.add(passwordField, "cell 1 2,growx");
+		passwordField.setColumns(10);
+		
 	}
 
 	private void initButtonPane(Resources resources) {
@@ -98,7 +127,8 @@ public class LoginDialog extends JDialog implements LoginController.LoginView {
 		loginBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				delegate.onLoginClicked(LoginDialog.this, usernameTextfield.getText(),
+				uiHandler.onLoginClicked(LoginDialog.this,
+						usernameTextfield.getText(),
 						passwordField.getPassword());
 			}
 		});
@@ -109,7 +139,7 @@ public class LoginDialog extends JDialog implements LoginController.LoginView {
 		cancelBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				delegate.onCancelClicked();
+				uiHandler.onCancelClicked();
 			}
 		});
 		buttonPane.add(cancelBtn);

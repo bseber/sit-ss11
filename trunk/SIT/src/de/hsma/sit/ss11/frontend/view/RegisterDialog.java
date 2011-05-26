@@ -11,7 +11,6 @@ import java.awt.event.FocusListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -23,14 +22,13 @@ import net.miginfocom.swing.MigLayout;
 import de.hsma.sit.ss11.frontend.resources.Resources;
 import de.hsma.sit.ss11.frontend.view.widgets.DialogHeaderPanel;
 
-public class AddUserDialog extends JDialog {
+public class RegisterDialog extends JDialog {
 
 	public interface UIHandler {
 		boolean addUser(String username, String password, String privatePassword);
 	}
 
 	private final JPanel contentPanel = new JPanel();
-	private final MainWindow mainWindow;
 	private final UIHandler uiHandler;
 
 	private JTextField usernameTxtField;
@@ -42,26 +40,24 @@ public class AddUserDialog extends JDialog {
 	private JLabel icnPrivPass2Error;
 	private JLabel icnPrivPassError;
 
-	public AddUserDialog(MainWindow mainWindow, JFrame parent,
-			Resources resources, AddUserDialog.UIHandler uiHandler) {
-		super(parent, "", true);
-		this.mainWindow = mainWindow;
+	public RegisterDialog(RegisterDialog.UIHandler uiHandler) {
 		this.uiHandler = uiHandler;
-		init(parent, resources);
+		init();
+		this.pack();
+		setLocationRelativeTo(null);
 	}
 
-	private void init(JFrame parent, Resources resources) {
+	private void init() {
 		setResizable(false);
-		setBounds(100, 100, 450, 300);
-		setLocationRelativeTo(parent);
 		getContentPane().setLayout(new BorderLayout());
 
-		initHeaderPanel(resources);
+		initHeaderPanel();
 		initContentPanel();
 		initButtonPane();
 	}
 
-	private void initHeaderPanel(Resources resources) {
+	private void initHeaderPanel() {
+		Resources resources = Resources.getInstance();
 		DialogHeaderPanel headerPanel = new DialogHeaderPanel(resources
 				.images().user(), resources.messages().addUser(), "",
 				this.getWidth());
@@ -226,10 +222,9 @@ public class AddUserDialog extends JDialog {
 						String.valueOf(privatePassField.getPassword()));
 				if (success) {
 					resetInputFields();
-					mainWindow.refreshUserList();
-					AddUserDialog.this.dispose();
+					RegisterDialog.this.dispose();
 				} else {
-					new ErrorDialog(AddUserDialog.this, "",
+					new ErrorDialog(RegisterDialog.this, "",
 							"Benutzer konnte nicht hinzugefügt werden.")
 							.setVisible(true);
 				}
@@ -244,7 +239,7 @@ public class AddUserDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				resetInputFields();
-				AddUserDialog.this.dispose();
+				RegisterDialog.this.dispose();
 			}
 		});
 		return cancelButton;

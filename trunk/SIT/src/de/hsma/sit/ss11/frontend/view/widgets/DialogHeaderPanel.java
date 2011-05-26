@@ -15,8 +15,6 @@ import net.miginfocom.swing.MigLayout;
 
 public class DialogHeaderPanel extends JPanel {
 
-	private static final int HEIGHT = 60; // px
-	
 	private Color westColor = Color.gray;
 	private Color eastColor = Color.lightGray;
 
