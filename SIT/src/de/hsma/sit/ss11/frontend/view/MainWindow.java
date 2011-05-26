@@ -41,8 +41,6 @@ public class MainWindow implements MainWindowController.MainWindowView {
 		 */
 		boolean onAddFileClicked();
 
-		void onAddUserClicked(MainWindow mainWindow, JFrame parent);
-
 		void onDownloadFileClicked();
 
 		void onFileSelected(FileInfo file);
@@ -174,22 +172,6 @@ public class MainWindow implements MainWindowController.MainWindowView {
 		navPanel.addLeft(createButton(resources.images().downloadFile(),
 				resources.images().downloadFileGlow(), resources.messages()
 						.tooltipDownloadFile(), getDownloadFileCommand()));
-		// TODO display following only if user is admin
-		// separator
-		navPanel.addLeft(new JLabel(resources.images().navSeparator()));
-		// add new user
-		navPanel.addLeft(createButton(resources.images().addUser(), resources
-				.images().addUserGlow(), resources.messages().tooltipAddUser(),
-				getAddUserCommand()));
-	}
-
-	private Command getAddUserCommand() {
-		return new Command() {
-			@Override
-			public void execute() {
-				uiHandler.onAddUserClicked(MainWindow.this, frame);
-			}
-		};
 	}
 
 	private Command getRemoveFileCommand() {

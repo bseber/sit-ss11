@@ -1,10 +1,10 @@
 package de.hsma.sit.ss11.frontend;
 
-import de.hsma.sit.ss11.frontend.controller.AddUserDialogUIHandler;
+import de.hsma.sit.ss11.frontend.controller.RegisterDialogUIHandler;
 import de.hsma.sit.ss11.frontend.controller.LoginUIHandler;
 import de.hsma.sit.ss11.frontend.controller.MainWindowUIHandler;
 import de.hsma.sit.ss11.frontend.resources.Resources;
-import de.hsma.sit.ss11.frontend.view.AddUserDialog;
+import de.hsma.sit.ss11.frontend.view.RegisterDialog;
 import de.hsma.sit.ss11.frontend.view.LoginDialog;
 import de.hsma.sit.ss11.frontend.view.MainWindow;
 
@@ -13,9 +13,9 @@ public class ClientFactory {
 	private static final ClientFactory INSTANCE = new ClientFactory();
 
 	private Resources resources;
-	private AddUserDialog.UIHandler addUserUIHandler;
 	private MainWindow mainWindow;
 
+	private RegisterDialog.UIHandler registerDialogUIHandler;
 	private LoginDialog.UIHandler loginUIHandler;
 	private MainWindow.UIHandler mainWindowUIHandler;
 
@@ -40,11 +40,11 @@ public class ClientFactory {
 		return mainWindow(true);
 	}
 
-	public AddUserDialog.UIHandler addUserUIHandler() {
-		if (addUserUIHandler == null) {
-			addUserUIHandler = new AddUserDialogUIHandler();
+	public RegisterDialog.UIHandler registerDialogUIHandler() {
+		if (registerDialogUIHandler == null) {
+			registerDialogUIHandler = new RegisterDialogUIHandler();
 		}
-		return addUserUIHandler;
+		return registerDialogUIHandler;
 	}
 
 	public MainWindow mainWindow(boolean successfulLogin) {
@@ -63,7 +63,7 @@ public class ClientFactory {
 
 	public MainWindow.UIHandler mainWindowUIHandler() {
 		if (mainWindowUIHandler == null) {
-			mainWindowUIHandler = new MainWindowUIHandler(this);
+			mainWindowUIHandler = new MainWindowUIHandler();
 		}
 		return mainWindowUIHandler;
 	}

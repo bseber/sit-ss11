@@ -1,10 +1,10 @@
 package de.hsma.sit.ss11.frontend.controller;
 
 import de.hsma.sit.ss11.factories.Factory;
-import de.hsma.sit.ss11.frontend.view.AddUserDialog;
+import de.hsma.sit.ss11.frontend.view.RegisterDialog;
 import de.hsma.sit.ss11.services.UserService;
 
-public class AddUserDialogUIHandler implements AddUserDialog.UIHandler {
+public class RegisterDialogUIHandler implements RegisterDialog.UIHandler {
 
 	private final UserService userService = Factory.getInstance()
 			.getUserService();
