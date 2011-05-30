@@ -10,7 +10,7 @@ import javax.persistence.*;
  *
  */
 @Entity
-public class AnyUser implements Serializable {
+public class AnyUser implements Comparable<AnyUser>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -76,5 +76,10 @@ public class AnyUser implements Serializable {
 
 	public void setEncryptedPrivateKey(byte[] encryptedPrivateKey) {
 		this.encryptedPrivateKey = encryptedPrivateKey;
+	}
+
+	@Override
+	public int compareTo(AnyUser o) {
+		return this.name.compareTo(o.getName());
 	}
 }
