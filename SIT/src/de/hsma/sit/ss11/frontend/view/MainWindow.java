@@ -137,7 +137,6 @@ public class MainWindow implements MainWindowController.MainWindowView {
 
 	public void setVisible(boolean b) {
 		frame.setVisible(true);
-		splitPane.setDividerLocation(splitPane.getParent().getHeight());
 	}
 
 	@Override
@@ -161,6 +160,7 @@ public class MainWindow implements MainWindowController.MainWindowView {
 
 	@Override
 	public void setUserList(List<AnyUser> userList) {
+		allUsersListModel.clear();
 		allUsersListModel.addAll(userList.toArray());
 	}
 
@@ -237,8 +237,7 @@ public class MainWindow implements MainWindowController.MainWindowView {
 							dialog.dispose();
 						}
 					};
-					final PasswordDialog dialog = new PasswordDialog(frame,
-							callback);
+					dialog = new PasswordDialog(frame, callback);
 					dialog.setVisible(true);
 				}
 			}
@@ -356,8 +355,7 @@ public class MainWindow implements MainWindowController.MainWindowView {
 		splitPane.setRightComponent(userContainerPanel);
 		userContainerPanel.setOpaque(false);
 		userContainerPanel.setBorder(null);
-		userContainerPanel.setLayout(new MigLayout("", "[grow][center][grow]",
-				"[119px,grow][5px]"));
+		userContainerPanel.setLayout(new MigLayout("", "[grow 45][center][grow 45]", "[119px,grow][5px]"));
 
 		JPanel allUsersContainer = new JPanel();
 		allUsersContainer.setOpaque(false);
@@ -541,16 +539,21 @@ public class MainWindow implements MainWindowController.MainWindowView {
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			FileInfo file = (FileInfo) fileList.getSelectedValue();
-			if (file == null) {
+			if (file == null || !file.getMaster()) {
 				// nothing is selected anymore
+				// or user is only able to read
 				setUserAssignBtnsEnabled(false);
 				btnSaveChanges.setVisible(false);
 				assignedUsersListModel.clear();
-			} else if (file.getMaster() && !file.equals(prevFile)) {
+				if (!file.getMaster()) {
+					setInformationText("Ausgewählte Datei kann nur gelesen werden.");
+				}
+			} else if (!file.equals(prevFile)) {
 				// another file has been selected
 				setUserAssignBtnsEnabled(true);
 				btnSaveChanges.setVisible(false);
 				uiHandler.onFileSelected(file);
+				setInformationText("");
 			}
 			prevFile = file;
 		}
