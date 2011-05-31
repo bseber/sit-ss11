@@ -7,29 +7,6 @@ import javax.swing.ImageIcon;
 public class Images {
 	
 	private final String PATH;
-	private final String ADD_USER_ICN = "user-add-icon.png";
-	private final String ADD_USER_ICN_GLOW = "user-add-icon-glow.png";
-	private final String ARROW_FORWARD = "forward-icon.png";
-	private final String ARROW_BACK = "back-icon.png";
-	private final String FILE_ADD_ICN = "file-add-icon.png";
-	private final String FILE_ADD_ICN_GLOW = "file-add-icon-glow.png";
-	private final String FILE_REM_ICN = "file-remove-icon.png";
-	private final String FILE_REM_ICN_GLOW = "file-remove-icon-glow.png";
-	private final String FILE_DOWN_ICN = "file-down-icon.png";
-	private final String FILE_DOWN_ICN_GLOW = "file-down-icon-glow.png";
-	private final String INFO_ICN = "info-icon.png";
-	private final String INFO_ICN_BIG = "info-icon-48.png";
-	private final String INFO_ICN_GLOW = "info-icon-glow.png";
-	private final String INPUT_ERROR = "inputError-icon.png";
-	private final String LOGOUT_ICN = "logout-icon.png";
-	private final String LOGOUT_ICN_GLOW = "logout-icon-glow.png";
-	private final String NAV_SEPARATOR = "nav-separator.png";
-	private final String REMOVE_USER_ICN = "user-remove-icon.png";
-	private final String REMOVE_USER_ICN_GLOW = "user-remove-icon-glow.png";
-	private final String SAVE_ICN = "floppy-icon.png";
-	private final String SECURITY_ICN = "security_icn.png";
-	private final String USER_ICN = "user-icon.png";
-	private final String WARNING_ICN = "warning-icon.png";
 	
 	/**
 	 * Package-private because only {@link Resources} should instantiate this
@@ -42,122 +19,126 @@ public class Images {
 	}
 	
 	public ImageIcon addFile() {
-		return new ImageIcon(getResource(FILE_ADD_ICN));
+		return new ImageIcon(getResource("file-add-icon.png"));
 	}
 	
 	/**
 	 * @return mouse over icon to add a file
 	 */
 	public ImageIcon addFileGlow() {
-		return new ImageIcon(getResource(FILE_ADD_ICN_GLOW));
+		return new ImageIcon(getResource("file-add-icon-glow.png"));
 	}
 	
 	public ImageIcon addUser() {
-		return new ImageIcon(getResource(ADD_USER_ICN));
+		return new ImageIcon(getResource("user-add-icon.png"));
 	}
 	
 	/**
 	 * @return mouse over icon to add a new user
 	 */
 	public ImageIcon addUserGlow() {
-		return new ImageIcon(getResource(ADD_USER_ICN_GLOW));
+		return new ImageIcon(getResource("user-add-icon-glow.png"));
 	}
 	
 	public ImageIcon arrowForward() {
-		return new ImageIcon(getResource(ARROW_FORWARD));
+		return new ImageIcon(getResource("forward-icon.png"));
 	}
 	
 	public ImageIcon arrowBack() {
-		return new ImageIcon(getResource(ARROW_BACK));
+		return new ImageIcon(getResource("back-icon.png"));
 	}
 
 	public ImageIcon downloadFile() {
-		return new ImageIcon(getResource(FILE_DOWN_ICN));
+		return new ImageIcon(getResource("file-down-icon.png"));
 	}
 	
 	/**
 	 * @return mouse over icon to add a file
 	 */
 	public ImageIcon downloadFileGlow() {
-		return new ImageIcon(getResource(FILE_DOWN_ICN_GLOW));
+		return new ImageIcon(getResource("file-down-icon-glow.png"));
+	}
+	
+	public ImageIcon fileEditable() {
+		return new ImageIcon(getResource("edit-icon.png"));
+	}
+	
+	public ImageIcon fileLock() {
+		return new ImageIcon(getResource("database-lock-icon-48.png"));
+	}
+	
+	public ImageIcon fileReadable() {
+		return new ImageIcon(getResource("read-icon.png"));
 	}
 	
 	public ImageIcon info() {
-		return new ImageIcon(getResource(INFO_ICN));
+		return new ImageIcon(getResource("info-icon.png"));
 	}
 	
 	/**
 	 * @return info icon 48*48
 	 */
 	public ImageIcon infoBig() {
-		return new ImageIcon(getResource(INFO_ICN_BIG));
+		return new ImageIcon(getResource("info-icon-48.png"));
 	}
 	
 	/**
 	 * @return mouse over icon to get information about something
 	 */
 	public ImageIcon infoGlow() {
-		return new ImageIcon(getResource(INFO_ICN_GLOW));
+		return new ImageIcon(getResource("info-icon-glow.png"));
 	}
 	
 	public ImageIcon inputError() {
-		return new ImageIcon(getResource(INPUT_ERROR));
+		return new ImageIcon(getResource("inputError-icon.png"));
 	}
 	
 	/**
 	 * @return a lock icon
 	 */
 	public ImageIcon lock() {
-		return new ImageIcon(getResource(SECURITY_ICN));
+		return new ImageIcon(getResource("security_icn.png"));
 	}
 	
 	public ImageIcon logout() {
-		return new ImageIcon(getResource(LOGOUT_ICN));
+		return new ImageIcon(getResource("logout-icon.png"));
 	}
 	
 	/**
 	 * @return mouse over icon to remove a file
 	 */
 	public ImageIcon logoutGlow() {
-		return new ImageIcon(getResource(LOGOUT_ICN_GLOW));
-	}
-	
-	public ImageIcon navSeparator() {
-		return new ImageIcon(getResource(NAV_SEPARATOR));
+		return new ImageIcon(getResource("logout-icon-glow.png"));
 	}
 	
 	public ImageIcon removeFile() {
-		return new ImageIcon(getResource(FILE_REM_ICN));
+		return new ImageIcon(getResource("file-remove-icon.png"));
 	}
 	
 	/**
 	 * @return mouse over icon to remove a file
 	 */
 	public ImageIcon removeFileGlow() {
-		return new ImageIcon(getResource(FILE_REM_ICN_GLOW));
-	}
-	
-	public ImageIcon removeUser() {
-		return new ImageIcon(getResource(REMOVE_USER_ICN));
-	}
-	
-	/**
-	 * @return mouse over icon to remove a user
-	 */
-	public ImageIcon removeUserGlow() {
-		return new ImageIcon(getResource(REMOVE_USER_ICN_GLOW));
+		return new ImageIcon(getResource("file-remove-icon-glow.png"));
 	}
 	
 	public ImageIcon save() {
-		return new ImageIcon(getResource(SAVE_ICN));
+		return new ImageIcon(getResource("floppy-icon.png"));
 	}
 	
 	public ImageIcon user() {
-		return new ImageIcon(getResource(USER_ICN));
+		return new ImageIcon(getResource("user-icon.png"));
+	}
+	
+	/**
+	 * @return a small (16*16) user icon
+	 */
+	public ImageIcon userSmall() {
+		return new ImageIcon(getResource("user-icon-16.png"));
 	}
 	
 	public ImageIcon warning() {
-		return new ImageIcon(getResource(WARNING_ICN));
+		return new ImageIcon(getResource("warning-icon.png"));
 	}
 	
 

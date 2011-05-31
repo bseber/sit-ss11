@@ -1,27 +1,18 @@
 package de.hsma.sit.ss11.frontend.controller;
 
+import de.hsma.sit.ss11.frontend.scaffold.AbstractController;
+import de.hsma.sit.ss11.frontend.scaffold.View;
 import de.hsma.sit.ss11.frontend.view.LoginDialog;
 
-public class LoginController {
+public class LoginController extends
+		AbstractController<LoginController.LoginView, LoginDialog.MyUIHandler> {
 
-	public interface LoginView {
-		void setVisible(boolean b);
-
-		void dispose();
+	public interface LoginView extends View {
 	}
 
-	private LoginView view;
-
-	public LoginController() {
-		view = new LoginDialog(new LoginUIHandler());
-	}
-
-	public void setDialogVisible(boolean b) {
-		if (b) {
-			view.setVisible(b);
-		} else {
-			view.dispose();
-		}
+	public LoginController(LoginController.LoginView view,
+			LoginDialog.MyUIHandler uiHandler) {
+		super(view, uiHandler);
 	}
 
 }

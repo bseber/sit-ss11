@@ -3,14 +3,20 @@ package de.hsma.sit.ss11.frontend.resources;
 public class Resources {
 
 	private static Resources instance = new Resources();
-	
+
 	private Messages constants;
 	private Images images;
-	
+
+	/**
+	 * Access only with {@link #getInstance()}
+	 */
+	private Resources() {
+	}
+
 	public static Resources getInstance() {
 		return instance;
 	}
-	
+
 	/**
 	 * Access to label texts etc
 	 * 

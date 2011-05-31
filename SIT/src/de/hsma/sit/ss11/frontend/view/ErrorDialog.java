@@ -52,7 +52,7 @@ public class ErrorDialog extends JDialog {
 			JLabel lblNewLabel_1 = new JLabel("<html><p>" + errorMsg
 					+ "</p></html>");
 			contentPanel.add(lblNewLabel_1,
-					"cell 1 0,alignx center,aligny center");
+					"cell 1 0,alignx left,aligny center");
 		}
 		{
 			JPanel buttonPane = new JPanel();

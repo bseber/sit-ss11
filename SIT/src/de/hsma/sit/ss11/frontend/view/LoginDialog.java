@@ -2,10 +2,8 @@ package de.hsma.sit.ss11.frontend.view;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -22,11 +20,12 @@ import javax.swing.border.EmptyBorder;
 import net.miginfocom.swing.MigLayout;
 import de.hsma.sit.ss11.frontend.controller.LoginController;
 import de.hsma.sit.ss11.frontend.resources.Resources;
+import de.hsma.sit.ss11.frontend.scaffold.UIHandler;
 import de.hsma.sit.ss11.frontend.view.widgets.DialogHeaderPanel;
 
 public class LoginDialog extends JDialog implements LoginController.LoginView {
 
-	public interface UIHandler {
+	public interface MyUIHandler extends UIHandler {
 		
 		void onCancelClicked();
 
@@ -36,22 +35,20 @@ public class LoginDialog extends JDialog implements LoginController.LoginView {
 	}
 
 	private final JPanel contentPanel;
-	private final UIHandler uiHandler;
+	private final MyUIHandler uiHandler;
 	private JTextField usernameTextfield;
 	private JPasswordField passwordField;
 
-	public LoginDialog(LoginDialog.UIHandler uiHandler) {
+	public LoginDialog(LoginDialog.MyUIHandler uiHandler) {
 		this.contentPanel = new JPanel();
 		this.uiHandler = uiHandler;
 		init();
 		this.pack();
+		setLocationRelativeTo(null);
 	}
 
 	private void init() {
 		setResizable(false);
-		setModal(true);
-		setAlwaysOnTop(true);
-		setLocationRelativeTo(null);
 		
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(15, 15, 0, 15));
