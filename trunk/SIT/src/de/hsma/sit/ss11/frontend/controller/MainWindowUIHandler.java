@@ -1,6 +1,14 @@
 package de.hsma.sit.ss11.frontend.controller;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,26 +71,23 @@ public class MainWindowUIHandler implements MainWindow.MyUIHandler {
 	@Override
 	public void onDownloadFileClicked(FileInfo file, String password) {
 		AnyUser user = Application.getCurrentUser();
+		// TODO save file in user specified path...
 		File decryptedFile = fileInfoService.getFile(user, file, password);
-
 		if (decryptedFile != null) {
-			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setSelectedFile(decryptedFile);
-			fileChooser.showSaveDialog(null);
 			view.setInfoText("Datei wurde entschlüsselt.");
 		} else {
-			view.setInfoText("Datei konnte nicht entschlüsselt wreden (Falsches Passwort?).");
+			view.setInfoText("Datei konnte nicht entschlüsselt werden (Falsches Passwort?).");
 		}
 	}
 
 	@Override
 	public void onFileSelected(FileInfo file) {
-		List<AnyUser> assigned = fileInfoService.getUsersWithKeyCopy(file);
 		List<AnyUser> allUsersTmp = userService.getAllUser();
+		List<AnyUser> assigned = fileInfoService.getUsersWithKeyCopy(file);
 		AnyUser currentUser = Application.getCurrentUser();
 		allUsersTmp.remove(currentUser);
 		List<AnyUser> allUsers = new ArrayList<AnyUser>();
-		// remove users who are assigned
+		// remove users who are already assigned
 		for (AnyUser u : allUsersTmp) {
 			if (!assigned.contains(u)) {
 				allUsers.add(u);
@@ -114,27 +119,40 @@ public class MainWindowUIHandler implements MainWindow.MyUIHandler {
 	public boolean onSaveClicked(FileInfo file, List<AnyUser> notAssigned,
 			List<AnyUser> assigned, String password) {
 		// not assigned users
-		boolean b1 = true;
 		for (AnyUser u : notAssigned) {
-			b1 = keyBoxService.removeKeyCopyFromUser(u, file);
-		}
-
-		// assign users
-		boolean b2 = b1 && !assigned.isEmpty();
-		if (b2) {
-			AnyUser currentUser = Application.getCurrentUser();
-			for (AnyUser u : assigned) {
-				b2 = keyBoxService.giveKeyCopyToAnyUser(currentUser, u, file,
-						password);
+			if (keyBoxService.userHasKeyCopy(u.getId(), file)) {
+				keyBoxService.removeKeyCopyFromUser(u, file);
 			}
 		}
 
-		return b1 && b2;
+		// assign users
+		if (!assigned.isEmpty()) {
+			AnyUser currentUser = Application.getCurrentUser();
+			for (AnyUser u : assigned) {
+				keyBoxService.giveKeyCopyToAnyUser(currentUser, u, file,
+						password);
+			}
+		}
+		// TODO
+		return true;
 	}
 
 	@Override
 	public void setView(MainWindow view) {
 		this.view = view;
+	}
+	
+	public static boolean writeFile(File file, String dataString) {
+		try {
+			PrintWriter out = new PrintWriter(new BufferedWriter(
+					new FileWriter(file)));
+			out.print(dataString);
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
 	}
 
 }
