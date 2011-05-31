@@ -9,7 +9,7 @@ import javax.persistence.*;
  *
  */
 @Entity
-public class FileInfo implements Serializable {
+public class FileInfo implements Comparable<FileInfo>, Serializable {
 
 
 	private static final long serialVersionUID = 1L;
@@ -74,8 +74,49 @@ public class FileInfo implements Serializable {
 	public long getUserID() {
 		return userID;
 	}
+
+	@Override
+	public int compareTo(FileInfo o) {
+		return this.fileName.compareTo(o.getFileName());
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (fileID ^ (fileID >>> 32));
+		result = prime * result
+				+ ((fileName == null) ? 0 : fileName.hashCode());
+		result = prime * result
+				+ ((saveName == null) ? 0 : saveName.hashCode());
+		result = prime * result + (int) (userID ^ (userID >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FileInfo other = (FileInfo) obj;
+		if (fileID != other.fileID)
+			return false;
+		if (fileName == null) {
+			if (other.fileName != null)
+				return false;
+		} else if (!fileName.equals(other.fileName))
+			return false;
+		if (saveName == null) {
+			if (other.saveName != null)
+				return false;
+		} else if (!saveName.equals(other.saveName))
+			return false;
+		if (userID != other.userID)
+			return false;
+		return true;
+	}
 	
-	
-	
-   
 }
