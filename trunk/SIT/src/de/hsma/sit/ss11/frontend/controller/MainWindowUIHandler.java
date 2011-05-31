@@ -14,7 +14,6 @@ import de.hsma.sit.ss11.frontend.Application;
 import de.hsma.sit.ss11.frontend.controller.MainWindowController.MainWindowView;
 import de.hsma.sit.ss11.frontend.view.InfoDialog;
 import de.hsma.sit.ss11.frontend.view.MainWindow;
-import de.hsma.sit.ss11.frontend.view.widgets.PasswordDialog;
 import de.hsma.sit.ss11.services.FileInfoService;
 import de.hsma.sit.ss11.services.KeyBoxService;
 import de.hsma.sit.ss11.services.UserService;
@@ -65,7 +64,7 @@ public class MainWindowUIHandler implements MainWindow.MyUIHandler {
 	public void onDownloadFileClicked(FileInfo file, String password) {
 		AnyUser user = Application.getCurrentUser();
 		File decryptedFile = fileInfoService.getFile(user, file, password);
-		
+
 		if (decryptedFile != null) {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setSelectedFile(decryptedFile);
@@ -108,9 +107,7 @@ public class MainWindowUIHandler implements MainWindow.MyUIHandler {
 
 	@Override
 	public boolean onRemoveFileClicked(FileInfo file) {
-		// TODO Auto-generated method stub
-		fileInfoService.deleteFile(file);
-		return false;
+		return file.getMaster() ? fileInfoService.deleteFile(file) : false;
 	}
 
 	@Override
@@ -123,12 +120,12 @@ public class MainWindowUIHandler implements MainWindow.MyUIHandler {
 		}
 
 		// assign users
-		boolean b2 = false;
-		if (b1) {
+		boolean b2 = b1 && !assigned.isEmpty();
+		if (b2) {
 			AnyUser currentUser = Application.getCurrentUser();
 			for (AnyUser u : assigned) {
-				b2 = keyBoxService.giveKeyCopyToAnyUser(currentUser, u,
-						file, password);
+				b2 = keyBoxService.giveKeyCopyToAnyUser(currentUser, u, file,
+						password);
 			}
 		}
 

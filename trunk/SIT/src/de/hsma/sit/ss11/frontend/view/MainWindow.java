@@ -61,10 +61,6 @@ public class MainWindow implements MainWindowController.MainWindowView {
 
 		void onLogoutClicked();
 
-		/**
-		 * @return <code>true</code> if a file was removed successfully,
-		 *         otherwise <code>false</code>
-		 */
 		boolean onRemoveFileClicked(FileInfo file);
 
 		boolean onSaveClicked(FileInfo file, List<AnyUser> notAssigned,
@@ -205,8 +201,18 @@ public class MainWindow implements MainWindowController.MainWindowView {
 		return new Command() {
 			@Override
 			public void execute() {
-				uiHandler.onRemoveFileClicked((FileInfo) fileList
-						.getSelectedValue());
+				FileInfo file = (FileInfo) fileList.getSelectedValue();
+				if (file != null) {
+					boolean success = uiHandler.onRemoveFileClicked(file);
+					if (success) {
+						fileListModel.removeElement(file);
+						setInformationText("Datei wurde erfolgreich gelöscht.");
+					} else {
+						setInformationText("Datei konnte nicht gelöscht werden.");
+					}
+				} else {
+					setInformationText("Keine Datei ausgewählt.");
+				}
 			}
 		};
 	}
@@ -489,9 +495,10 @@ public class MainWindow implements MainWindowController.MainWindowView {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private class SaveListener extends ClickListener {
+		private PasswordDialog dialog;
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			new PasswordDialog(frame, new Callback<String>() {
+			Callback<String> callback = new Callback<String>() {
 				@Override
 				public void onCallback(String password) {
 					// save changes (user assignments)
@@ -503,9 +510,14 @@ public class MainWindow implements MainWindowController.MainWindowView {
 					if (success) {
 						setInformationText("Änderungen wurden erfolgreich gespeichert.");
 						btnSaveChanges.setVisible(false);
+					} else {
+						setInformationText("Änderungen konnten nicht gespeichert werden.");
 					}
+					dialog.dispose();
 				}
-			}).setVisible(true);
+			};
+			dialog = new PasswordDialog(frame, callback);
+			dialog.setVisible(true);
 		}
 	}
 
