@@ -3,6 +3,7 @@ package de.hsma.sit.ss11.services;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.persistence.EntityManager;
@@ -78,6 +79,26 @@ public class KeyBoxServiceImpl implements KeyBoxService {
 			return false;
 		}
 		finally {
+			em.close();
+		}
+	}
+
+	@Override
+	public boolean userHasKeyCopy(long userID, FileInfo file) {
+		// TODO Auto-generated method stub
+		
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		
+		Query q = em.createQuery ("SELECT fileInfo FROM FileInfo fileInfo WHERE fileInfo.userID = :userID" +
+				" AND fileInfo.saveName = :saveName");
+		q.setParameter("userID", userID);
+		q.setParameter("saveName", file.getSaveName());
+		
+		try {
+			List<?> result = q.getResultList();
+			return !result.isEmpty();
+		} finally {
 			em.close();
 		}
 	}
