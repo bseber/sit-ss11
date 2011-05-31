@@ -8,28 +8,30 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
+import de.hsma.sit.ss11.frontend.controller.RegisterController;
 import de.hsma.sit.ss11.frontend.resources.Resources;
+import de.hsma.sit.ss11.frontend.scaffold.UIHandler;
 import de.hsma.sit.ss11.frontend.view.widgets.DialogHeaderPanel;
 
-public class RegisterDialog extends JDialog {
+public class RegisterDialog extends JDialog implements RegisterController.RegisterView {
+	
+	private static final int PRIV_PASS_LENGTH = 8;
 
-	public interface UIHandler {
-		boolean addUser(String username, String password, String privatePassword);
+	public interface MyUIHandler extends UIHandler {
+		boolean onRegisterClicked(String username, String password, String privatePassword);
 	}
 
 	private final JPanel contentPanel = new JPanel();
-	private final UIHandler uiHandler;
+	private final MyUIHandler uiHandler;
 
 	private JTextField usernameTxtField;
 	private JPasswordField loginPassField;
@@ -40,7 +42,7 @@ public class RegisterDialog extends JDialog {
 	private JLabel icnPrivPass2Error;
 	private JLabel icnPrivPassError;
 
-	public RegisterDialog(RegisterDialog.UIHandler uiHandler) {
+	public RegisterDialog(RegisterDialog.MyUIHandler uiHandler) {
 		this.uiHandler = uiHandler;
 		init();
 		this.pack();
@@ -49,6 +51,8 @@ public class RegisterDialog extends JDialog {
 
 	private void init() {
 		setResizable(false);
+		setModal(false);
+		setAlwaysOnTop(true);
 		getContentPane().setLayout(new BorderLayout());
 
 		initHeaderPanel();
@@ -59,7 +63,7 @@ public class RegisterDialog extends JDialog {
 	private void initHeaderPanel() {
 		Resources resources = Resources.getInstance();
 		DialogHeaderPanel headerPanel = new DialogHeaderPanel(resources
-				.images().user(), resources.messages().addUser(), "",
+				.images().user(), resources.messages().registerNewAccount(), "",
 				this.getWidth());
 		getContentPane().add(headerPanel, BorderLayout.NORTH);
 	}
@@ -93,13 +97,9 @@ public class RegisterDialog extends JDialog {
 				char[] a = loginPassField.getPassword();
 				char[] b = loginPassField2.getPassword();
 				if (validatePasswords(a, b)) {
-					loginPassField2.setBorder(UIManager
-							.getBorder("TextField.border"));
 					loginPassField2.setBackground(Color.white);
 					icnLogPassError.setVisible(false);
 				} else {
-					loginPassField2.setBorder(BorderFactory
-							.createLineBorder(Color.red));
 					loginPassField2.setBackground(Color.pink);
 					icnLogPassError.setVisible(true);
 				}
@@ -126,14 +126,10 @@ public class RegisterDialog extends JDialog {
 			@Override
 			public void focusLost(FocusEvent e) {
 				char[] password = privatePassField.getPassword();
-				if (password.length != 8) {
-					privatePassField.setBorder(BorderFactory
-							.createLineBorder(Color.red));
+				if (password.length != PRIV_PASS_LENGTH) {
 					privatePassField.setBackground(Color.pink);
 					icnPrivPassError.setVisible(true);
 				} else {
-					privatePassField.setBorder(UIManager
-							.getBorder("TextField.border"));
 					privatePassField.setBackground(Color.white);
 					icnPrivPassError.setVisible(false);
 				}
@@ -162,13 +158,9 @@ public class RegisterDialog extends JDialog {
 				char[] a = privatePassField.getPassword();
 				char[] b = privatePassField2.getPassword();
 				if (validatePasswords(a, b)) {
-					privatePassField2.setBorder(UIManager
-							.getBorder("TextField.border"));
 					privatePassField2.setBackground(Color.white);
 					icnPrivPass2Error.setVisible(false);
 				} else {
-					privatePassField2.setBorder(BorderFactory
-							.createLineBorder(Color.red));
 					privatePassField2.setBackground(Color.pink);
 					icnPrivPass2Error.setVisible(true);
 				}
@@ -182,7 +174,7 @@ public class RegisterDialog extends JDialog {
 
 		icnPrivPass2Error = new JLabel(Resources.getInstance().images()
 				.inputError());
-		icnPrivPass2Error.setToolTipText("Passwörter stimmen nicht überein.");
+		icnPrivPass2Error.setToolTipText(Resources.getInstance().messages().inputError());
 		icnPrivPass2Error.setVisible(false);
 		contentPanel.add(icnPrivPass2Error, "cell 3 4");
 	}
@@ -217,11 +209,11 @@ public class RegisterDialog extends JDialog {
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				boolean success = uiHandler.addUser(usernameTxtField.getText(),
+				boolean success = uiHandler.onRegisterClicked(usernameTxtField.getText(),
 						String.valueOf(loginPassField.getPassword()),
 						String.valueOf(privatePassField.getPassword()));
+				resetInputFields();
 				if (success) {
-					resetInputFields();
 					RegisterDialog.this.dispose();
 				} else {
 					new ErrorDialog(RegisterDialog.this, "",

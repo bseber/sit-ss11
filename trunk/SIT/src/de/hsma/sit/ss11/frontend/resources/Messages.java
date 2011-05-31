@@ -9,10 +9,6 @@ public class Messages {
 	Messages() {
 	}
 	
-	public String addUser() {
-		return "Neuen Benutzer hinzufügen";
-	}
-	
 	public String assignUsersToFile() {
 		return "Verschiedenen Benutzern Leserechte zuweisen";
 	}
@@ -31,6 +27,10 @@ public class Messages {
 	
 	public String filesharing() {
 		return "Datei freigeben";
+	}
+	
+	public String inputError() {
+		return "Die Passwörter stimmen nicht überein";
 	}
 	
 	public String login() {
@@ -55,6 +55,10 @@ public class Messages {
 	
 	public String readRight() {
 		return "Leserechte";
+	}
+	
+	public String registerNewAccount() {
+		return "Neuen Account anlegen";
 	}
 	
 	public String tooltipAddFile() {
@@ -91,10 +95,6 @@ public class Messages {
 	
 	public String username() {
 		return "Benutzername";
-	}
-	
-	public String userNotFound() {
-		return "Benutzer konnte nicht gefunden werden";
 	}
 	
 }
