@@ -23,9 +23,10 @@ import de.hsma.sit.ss11.frontend.resources.Resources;
 import de.hsma.sit.ss11.frontend.scaffold.UIHandler;
 import de.hsma.sit.ss11.frontend.view.widgets.DialogHeaderPanel;
 
+@SuppressWarnings("serial")
 public class LoginDialog extends JDialog implements LoginController.LoginView {
 
-	public interface MyUIHandler extends UIHandler {
+	public interface MyUIHandler extends UIHandler<LoginDialog> {
 		
 		void onCancelClicked();
 

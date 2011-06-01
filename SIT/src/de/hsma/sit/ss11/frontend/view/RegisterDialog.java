@@ -22,11 +22,12 @@ import de.hsma.sit.ss11.frontend.resources.Resources;
 import de.hsma.sit.ss11.frontend.scaffold.UIHandler;
 import de.hsma.sit.ss11.frontend.view.widgets.DialogHeaderPanel;
 
+@SuppressWarnings("serial")
 public class RegisterDialog extends JDialog implements RegisterController.RegisterView {
 	
 	private static final int PRIV_PASS_LENGTH = 8;
 
-	public interface MyUIHandler extends UIHandler {
+	public interface MyUIHandler extends UIHandler<RegisterDialog> {
 		boolean onRegisterClicked(String username, String password, String privatePassword);
 	}
 

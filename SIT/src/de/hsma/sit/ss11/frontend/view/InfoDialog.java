@@ -17,6 +17,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import java.awt.Font;
 
+@SuppressWarnings("serial")
 public class InfoDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();

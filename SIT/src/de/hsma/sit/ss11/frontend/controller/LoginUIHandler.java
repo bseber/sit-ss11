@@ -6,7 +6,6 @@ import de.hsma.sit.ss11.entities.AnyUser;
 import de.hsma.sit.ss11.factories.Factory;
 import de.hsma.sit.ss11.frontend.Application;
 import de.hsma.sit.ss11.frontend.resources.Resources;
-import de.hsma.sit.ss11.frontend.scaffold.View;
 import de.hsma.sit.ss11.frontend.view.ErrorDialog;
 import de.hsma.sit.ss11.frontend.view.LoginDialog;
 import de.hsma.sit.ss11.services.SecurityService;
@@ -45,9 +44,7 @@ public class LoginUIHandler implements LoginDialog.MyUIHandler {
 	}
 
 	@Override
-	public void setView(View view) {
-		// TODO Auto-generated method stub
-		
+	public void setView(LoginDialog view) {
 	}
 
 }
