@@ -146,11 +146,8 @@ public class MainWindow implements MainWindowController.MainWindowView {
 
 	@Override
 	public void setAssignedUsers(List<AnyUser> assignedUsers) {
-		if (assignedUsers.isEmpty()) {
-			assignedUsersListModel.clear();
-		} else {
-			assignedUsersListModel.addAll(assignedUsers.toArray());
-		}
+		assignedUsersListModel.clear();
+		assignedUsersListModel.addAll(assignedUsers.toArray());
 	}
 
 	@Override
@@ -545,7 +542,7 @@ public class MainWindow implements MainWindowController.MainWindowView {
 				setUserAssignBtnsEnabled(false);
 				btnSaveChanges.setVisible(false);
 				assignedUsersListModel.clear();
-				if (!file.getMaster()) {
+				if (file != null && !file.getMaster()) {
 					setInformationText("Ausgewählte Datei kann nur gelesen werden.");
 				}
 			} else if (!file.equals(prevFile)) {
