@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class NavPanel extends JPanel {
 
 	private static final Color NORTH_COLOR = Color.gray;

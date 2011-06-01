@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 
+@SuppressWarnings("serial")
 public class FileListCellPanel extends JPanel {
 
 	public FileListCellPanel(String text, ImageIcon icon, boolean selected) {

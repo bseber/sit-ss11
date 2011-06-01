@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
+@SuppressWarnings("serial")
 public class NavButton extends JLabel {
 
 	public NavButton(Icon icon, String tooltip) {

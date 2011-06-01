@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import net.miginfocom.swing.MigLayout;
 import de.hsma.sit.ss11.frontend.resources.Resources;
 
+@SuppressWarnings("serial")
 public class ErrorDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();

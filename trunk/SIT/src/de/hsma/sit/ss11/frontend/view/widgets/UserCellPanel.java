@@ -2,18 +2,18 @@ package de.hsma.sit.ss11.frontend.view.widgets;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Rectangle;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 
 import de.hsma.sit.ss11.frontend.resources.Images;
 import de.hsma.sit.ss11.frontend.resources.Resources;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import javax.swing.UIManager;
 
+@SuppressWarnings("serial")
 public class UserCellPanel extends JPanel {
 
 	public UserCellPanel(String userName, boolean selected) {

@@ -8,7 +8,7 @@ package de.hsma.sit.ss11.frontend.scaffold;
  * @param <U>
  *            the corresponding uiHandler
  */
-public abstract class AbstractController<V extends View, U extends UIHandler> {
+public abstract class AbstractController<V extends View, U extends UIHandler<?>> {
 
 	protected final V view;
 	protected final U uiHandler;

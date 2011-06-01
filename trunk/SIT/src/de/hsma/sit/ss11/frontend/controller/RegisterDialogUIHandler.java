@@ -1,7 +1,6 @@
 package de.hsma.sit.ss11.frontend.controller;
 
 import de.hsma.sit.ss11.factories.Factory;
-import de.hsma.sit.ss11.frontend.scaffold.View;
 import de.hsma.sit.ss11.frontend.view.RegisterDialog;
 import de.hsma.sit.ss11.services.UserService;
 
@@ -17,9 +16,7 @@ public class RegisterDialogUIHandler implements RegisterDialog.MyUIHandler {
 	}
 
 	@Override
-	public void setView(View view) {
-		// TODO Auto-generated method stub
-		
+	public void setView(RegisterDialog view) {
 	}
 
 }

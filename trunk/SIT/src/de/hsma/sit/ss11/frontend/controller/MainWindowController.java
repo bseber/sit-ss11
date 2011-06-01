@@ -10,8 +10,6 @@ import de.hsma.sit.ss11.frontend.scaffold.AbstractController;
 import de.hsma.sit.ss11.frontend.scaffold.View;
 import de.hsma.sit.ss11.frontend.view.MainWindow;
 import de.hsma.sit.ss11.services.FileInfoService;
-import de.hsma.sit.ss11.services.KeyBoxService;
-import de.hsma.sit.ss11.services.SecurityService;
 import de.hsma.sit.ss11.services.UserService;
 
 public class MainWindowController
@@ -20,8 +18,6 @@ public class MainWindowController
 
 	private UserService userService;
 	private FileInfoService fileInfoService;
-	private KeyBoxService keyBoxService;
-	private SecurityService securityService;
 
 	public interface MainWindowView extends View {
 		
@@ -54,8 +50,6 @@ public class MainWindowController
 		uiHandler.setView(view);
 		userService = Factory.getInstance().getUserService();
 		fileInfoService = Factory.getInstance().getFileInfoService();
-		keyBoxService = Factory.getInstance().getKeyBoxService();
-		securityService = Factory.getInstance().getSecurityService();
 	}
 
 	@Override
