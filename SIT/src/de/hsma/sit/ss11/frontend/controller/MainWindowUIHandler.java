@@ -1,14 +1,6 @@
 package de.hsma.sit.ss11.frontend.controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +35,6 @@ public class MainWindowUIHandler implements MainWindow.MyUIHandler {
 
 	@Override
 	public void onAddFileClicked(MainWindow mainWindow) {
-		// TODO Auto-generated method stub
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setMultiSelectionEnabled(false);
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -118,10 +109,21 @@ public class MainWindowUIHandler implements MainWindow.MyUIHandler {
 	@Override
 	public boolean onSaveClicked(FileInfo file, List<AnyUser> notAssigned,
 			List<AnyUser> assigned, String password) {
+		boolean result = false;
+		boolean oneWasFalse = false;
+		List<AnyUser> usersToRemove = new ArrayList<AnyUser>();
 		// not assigned users
 		for (AnyUser u : notAssigned) {
 			if (keyBoxService.userHasKeyCopy(u.getId(), file)) {
-				keyBoxService.removeKeyCopyFromUser(u, file);
+				usersToRemove.add(u);
+			}
+		}
+		for (AnyUser u : usersToRemove) {
+			// TODO if false is returned save user in array
+			// to show him in frontend
+			result = keyBoxService.removeKeyCopyFromUser(u, file);
+			if (!result) {
+				oneWasFalse = true;
 			}
 		}
 
@@ -129,30 +131,21 @@ public class MainWindowUIHandler implements MainWindow.MyUIHandler {
 		if (!assigned.isEmpty()) {
 			AnyUser currentUser = Application.getCurrentUser();
 			for (AnyUser u : assigned) {
-				keyBoxService.giveKeyCopyToAnyUser(currentUser, u, file,
+				// TODO if false is returned save user in array
+				// to show him in frontend
+				result = keyBoxService.giveKeyCopyToAnyUser(currentUser, u, file,
 						password);
+				if (!result) {
+					oneWasFalse = true;
+				}
 			}
 		}
-		// TODO
-		return true;
+		return oneWasFalse ? false : result;
 	}
 
 	@Override
 	public void setView(MainWindow view) {
 		this.view = view;
-	}
-	
-	public static boolean writeFile(File file, String dataString) {
-		try {
-			PrintWriter out = new PrintWriter(new BufferedWriter(
-					new FileWriter(file)));
-			out.print(dataString);
-			out.flush();
-			out.close();
-		} catch (IOException e) {
-			return false;
-		}
-		return true;
 	}
 
 }
