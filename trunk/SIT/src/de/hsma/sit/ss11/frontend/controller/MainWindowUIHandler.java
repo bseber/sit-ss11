@@ -40,23 +40,26 @@ public class MainWindowUIHandler implements MainWindow.MyUIHandler {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 		// this method does not return till dialog is closed
-		fileChooser.showOpenDialog(null);
-
-		File file = fileChooser.getSelectedFile();
-		if (file != null) {
-			try {
-				FileInfo savedFile = fileInfoService.saveFile(
-						Application.getCurrentUser(), file);
-				// add the file to the view
-				view.addFileToList(savedFile);
-				view.setInfoText("Datei wurde erfolgreich verschlüsselt und gespeichert.");
-			} catch (Exception e) {
-				e.printStackTrace();
+		int result = fileChooser.showOpenDialog(null);
+		
+		if (result == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			if (file != null) {
+				try {
+					FileInfo savedFile = fileInfoService.saveFile(
+							Application.getCurrentUser(), file);
+					// add the file to the view
+					view.addFileToList(savedFile);
+					view.setInfoText("Datei wurde erfolgreich verschlüsselt und gespeichert.");
+				} catch (Exception e) {
+					e.printStackTrace();
+					view.setInfoText("Datei konnte nicht hinzugefügt werden.");
+				}
+			} else {
 				view.setInfoText("Datei konnte nicht hinzugefügt werden.");
 			}
-		} else {
-			view.setInfoText("Datei konnte nicht hinzugefügt werden.");
 		}
+
 	}
 
 	@Override
