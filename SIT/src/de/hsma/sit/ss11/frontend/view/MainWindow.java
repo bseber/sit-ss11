@@ -152,7 +152,7 @@ public class MainWindow implements MainWindowController.MainWindowView {
 
 	@Override
 	public void setInfoText(String text) {
-		lblInformation.setText(text);
+		setInformationText(text, 3000);
 	}
 
 	@Override
